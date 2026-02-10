@@ -1,0 +1,4905 @@
+WARNING:absl:Tensorflow library not found, tensorflow.io.gfile operations will use native shim calls. GCS paths (i.e. 'gs://...') cannot be accessed.
+INFO:2025-02-25 15:50:15,240:jax._src.xla_bridge:945: Unable to initialize backend 'rocm': module 'jaxlib.xla_extension' has no attribute 'GpuAllocatorConfig'
+seed: 1234
+checkpoint: null
+data_dir: ./data
+output_dir: ./outputs/${now:%Y-%m-%d-%H-%M-%S}
+checkpoint_dir: ./checkpoints
+model:
+  ssm_init:
+    C_init: lecun_normal
+    dt_min: 0.004
+    dt_max: 0.1
+    conj_sym: false
+    clip_eigs: false
+  ssm:
+    discretization: async
+    d_model: 96
+    d_ssm: 128
+    ssm_block_size: 8
+    num_stages: 2
+    num_layers_per_stage: 4
+    dropout: 0.23
+    classification_mode: pool
+    prenorm: true
+    batchnorm: false
+    bn_momentum: 0.95
+    pooling_stride: 8
+    pooling_mode: avgpool
+    state_expansion_factor: 1
+task:
+  name: shd-classification
+training:
+  num_epochs: 60
+  per_device_batch_size: 32
+  per_device_eval_batch_size: 64
+  num_workers: 0
+  time_jitter: 1
+  spatial_jitter: 0.55
+  noise: 35
+  max_drop_chunk: 0.02
+  drop_event: 0.1
+  time_skew: 1.2
+  cut_mix: 0.3
+  pad_unit: 8192
+  validate_on_test: true
+optimizer:
+  ssm_base_lr: 1.7e-05
+  lr_factor: 10
+  warmup_epochs: 3
+  ssm_weight_decay: 0.0
+  weight_decay: 0.03
+  schedule: cosine
+  accumulation_steps: 1
+logging:
+  log_dir: ${output_dir}
+  interval: 1000
+  wandb: false
+  summary_metric: Performance/Validation accuracy
+  project: ???
+  entity: ???
+
+[2025-02-25 15:50:15,240][jax._src.xla_bridge][INFO] - Unable to initialize backend 'rocm': module 'jaxlib.xla_extension' has no attribute 'GpuAllocatorConfig'
+INFO:2025-02-25 15:50:15,252:jax._src.xla_bridge:945: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+[2025-02-25 15:50:15,252][jax._src.xla_bridge][INFO] - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+[*] Loading dataset...
+[*] Generating Spiking Heidelberg Digits Classification Dataset
+[*] WARNING: Using test set for validation
+[*] Creating model...
+[*] Initializing model state...
+[SequenceLayer] Layer 0: using manual_lambda = -0.55
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 3: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 0: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 3: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[*] Model parameter count: 343572
+[*] Using gradient accumulation with 1 steps
+[*] Running training on 2 GPUs
+[*] Logging to ./outputs/2025-02-25-15-50-14
+[*] Number of model parameters: 343572
+[*] Running training...
+[SequenceLayer] Layer 0: using manual_lambda = -0.55
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 3: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 0: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 3: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 0: using manual_lambda = -0.55
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 3: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 0: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 3: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+-----------------------------------------------------------------------------------------
+| end of epoch   1 | time per epoch: 184.24s |
+| Train Metrics | accuracy:  0.22 | loss:  2.60
+[SequenceLayer] Layer 0: using manual_lambda = -0.55
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 3: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 0: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 3: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+| Eval  Metrics | accuracy:  0.65 | loss:  1.15
+-----------------------------------------------------------------------------------------
+[2025-02-25 15:54:12,626][absl][INFO] - Saving checkpoint at step: 127
+[2025-02-25 15:54:12,627][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-25 15:54:12,628][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-25 15:54:12,628][absl][INFO] - orbax-checkpoint version: 0.11.1
+[2025-02-25 15:54:12,629][absl][INFO] - [thread=MainThread] Failed to get flag value for EXPERIMENTAL_ORBAX_USE_DISTRIBUTED_PROCESS_ID.
+[2025-02-25 15:54:12,629][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_127.
+[2025-02-25 15:54:12,633][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-25 15:54:12,634][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_127.orbax-checkpoint-tmp-0
+[2025-02-25 15:54:12,641][absl][INFO] - Wrote Metadata={'item_handlers': None, 'metrics': {}, 'performance_metrics': {}, 'init_timestamp_nsecs': 1740516852637179153, 'commit_timestamp_nsecs': None, 'custom': {}}, json={"item_handlers": null, "metrics": {}, "performance_metrics": {}, "init_timestamp_nsecs": 1740516852637179153, "commit_timestamp_nsecs": null, "custom": {}} to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_127.orbax-checkpoint-tmp-0/_CHECKPOINT_METADATA
+[2025-02-25 15:54:12,641][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-25 15:54:12,672][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-25 15:54:12,700][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 90.0 MiB/s (total bytes: 5.2 MiB) (time elapsed: 58 milliseconds) (per-host)
+[2025-02-25 15:54:12,965][absl][INFO] - ChainedFuture completed 1/1 futures in 0.24 seconds.
+[2025-02-25 15:54:12,966][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 16.2 MiB/s (total bytes: 5.2 MiB) (time elapsed: 324 milliseconds) (per-host)
+[2025-02-25 15:54:12,968][absl][INFO] - Read Metadata={'item_handlers': None, 'metrics': {}, 'performance_metrics': {}, 'init_timestamp_nsecs': 1740516852637179153, 'commit_timestamp_nsecs': None, 'custom': {}} from /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_127.orbax-checkpoint-tmp-0/_CHECKPOINT_METADATA
+[2025-02-25 15:54:12,972][absl][INFO] - Updated Metadata={'item_handlers': 'orbax.checkpoint._src.handlers.pytree_checkpoint_handler.PyTreeCheckpointHandler', 'metrics': {}, 'performance_metrics': {}, 'init_timestamp_nsecs': 1740516852637179153, 'commit_timestamp_nsecs': None, 'custom': {}} to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_127.orbax-checkpoint-tmp-0/_CHECKPOINT_METADATA
+[2025-02-25 15:54:12,972][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-25 15:54:13,005][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_127.orbax-checkpoint-tmp-0 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_127
+[2025-02-25 15:54:13,011][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_127`.
+[2025-02-25 15:54:13,011][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+-----------------------------------------------------------------------------------------
+| end of epoch   2 | time per epoch: 100.73s |
+| Train Metrics | accuracy:  0.55 | loss:  1.53
+| Eval  Metrics | accuracy:  0.74 | loss:  0.83
+-----------------------------------------------------------------------------------------
+[2025-02-25 15:56:12,400][absl][INFO] - Saving checkpoint at step: 254
+[2025-02-25 15:56:12,401][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-25 15:56:12,402][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-25 15:56:12,403][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_254.
+[2025-02-25 15:56:12,406][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-25 15:56:12,407][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_254.orbax-checkpoint-tmp-1
+[2025-02-25 15:56:12,413][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-25 15:56:12,447][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-25 15:56:12,488][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 70.7 MiB/s (total bytes: 5.2 MiB) (time elapsed: 74 milliseconds) (per-host)
+[2025-02-25 15:56:12,773][absl][INFO] - ChainedFuture completed 1/1 futures in 0.28 seconds.
+[2025-02-25 15:56:12,774][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 14.6 MiB/s (total bytes: 5.2 MiB) (time elapsed: 359 milliseconds) (per-host)
+[2025-02-25 15:56:12,780][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-25 15:56:12,823][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_254.orbax-checkpoint-tmp-1 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_254
+[2025-02-25 15:56:12,830][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_254`.
+[2025-02-25 15:56:12,830][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-25 15:56:12,831][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_127
+-----------------------------------------------------------------------------------------
+| end of epoch   3 | time per epoch: 100.72s |
+| Train Metrics | accuracy:  0.67 | loss:  1.18
+| Eval  Metrics | accuracy:  0.81 | loss:  0.56
+-----------------------------------------------------------------------------------------
+[2025-02-25 15:58:12,541][absl][INFO] - Saving checkpoint at step: 381
+[2025-02-25 15:58:12,543][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-25 15:58:12,544][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-25 15:58:12,546][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_381.
+[2025-02-25 15:58:12,551][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-25 15:58:12,552][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_381.orbax-checkpoint-tmp-2
+[2025-02-25 15:58:12,559][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-25 15:58:12,594][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-25 15:58:12,617][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 92.5 MiB/s (total bytes: 5.2 MiB) (time elapsed: 56 milliseconds) (per-host)
+[2025-02-25 15:58:12,889][absl][INFO] - ChainedFuture completed 1/1 futures in 0.27 seconds.
+[2025-02-25 15:58:12,889][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 16.0 MiB/s (total bytes: 5.2 MiB) (time elapsed: 328 milliseconds) (per-host)
+[2025-02-25 15:58:12,895][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-25 15:58:12,930][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_381.orbax-checkpoint-tmp-2 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_381
+[2025-02-25 15:58:12,937][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_381`.
+[2025-02-25 15:58:12,937][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-25 15:58:12,939][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_254
+-----------------------------------------------------------------------------------------
+| end of epoch   4 | time per epoch: 103.42s |
+| Train Metrics | accuracy:  0.70 | loss:  1.13
+| Eval  Metrics | accuracy:  0.88 | loss:  0.45
+-----------------------------------------------------------------------------------------
+[2025-02-25 16:00:14,935][absl][INFO] - Saving checkpoint at step: 508
+[2025-02-25 16:00:14,937][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-25 16:00:14,937][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-25 16:00:14,939][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_508.
+[2025-02-25 16:00:14,947][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-25 16:00:14,948][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_508.orbax-checkpoint-tmp-3
+[2025-02-25 16:00:14,955][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-25 16:00:14,986][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-25 16:00:15,020][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 82.1 MiB/s (total bytes: 5.2 MiB) (time elapsed: 63 milliseconds) (per-host)
+[2025-02-25 16:00:15,275][absl][INFO] - ChainedFuture completed 1/1 futures in 0.25 seconds.
+[2025-02-25 16:00:15,275][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 16.4 MiB/s (total bytes: 5.2 MiB) (time elapsed: 319 milliseconds) (per-host)
+[2025-02-25 16:00:15,282][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-25 16:00:15,316][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_508.orbax-checkpoint-tmp-3 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_508
+[2025-02-25 16:00:15,323][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_508`.
+[2025-02-25 16:00:15,323][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-25 16:00:15,324][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_381
+-----------------------------------------------------------------------------------------
+| end of epoch   5 | time per epoch: 102.80s |
+| Train Metrics | accuracy:  0.73 | loss:  1.02
+| Eval  Metrics | accuracy:  0.85 | loss:  0.55
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch   6 | time per epoch: 101.44s |
+| Train Metrics | accuracy:  0.78 | loss:  0.85
+| Eval  Metrics | accuracy:  0.87 | loss:  0.41
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch   7 | time per epoch: 104.16s |
+| Train Metrics | accuracy:  0.77 | loss:  0.90
+| Eval  Metrics | accuracy:  0.79 | loss:  0.62
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch   8 | time per epoch: 100.21s |
+| Train Metrics | accuracy:  0.80 | loss:  0.79
+| Eval  Metrics | accuracy:  0.85 | loss:  0.41
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch   9 | time per epoch: 106.24s |
+| Train Metrics | accuracy:  0.81 | loss:  0.74
+| Eval  Metrics | accuracy:  0.90 | loss:  0.31
+-----------------------------------------------------------------------------------------
+[2025-02-25 16:10:23,226][absl][INFO] - Saving checkpoint at step: 1143
+[2025-02-25 16:10:23,228][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-25 16:10:23,228][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-25 16:10:23,229][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_1143.
+[2025-02-25 16:10:23,238][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-25 16:10:23,239][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_1143.orbax-checkpoint-tmp-4
+[2025-02-25 16:10:23,246][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-25 16:10:23,278][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-25 16:10:23,693][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 11.8 MiB/s (total bytes: 5.2 MiB) (time elapsed: 445 milliseconds) (per-host)
+[2025-02-25 16:10:23,945][absl][INFO] - ChainedFuture completed 1/1 futures in 0.25 seconds.
+[2025-02-25 16:10:23,945][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 7.5 MiB/s (total bytes: 5.2 MiB) (time elapsed: 697 milliseconds) (per-host)
+[2025-02-25 16:10:23,951][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-25 16:10:23,986][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_1143.orbax-checkpoint-tmp-4 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_1143
+[2025-02-25 16:10:23,992][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_1143`.
+[2025-02-25 16:10:23,993][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-25 16:10:23,994][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_508
+-----------------------------------------------------------------------------------------
+| end of epoch  10 | time per epoch: 108.06s |
+| Train Metrics | accuracy:  0.82 | loss:  0.75
+==== Parameter Statistics: Lambda ====
+{}
+==== Parameter Statistics: B Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/B": {
+    "mean": 0.00035448296694085,
+    "std": 0.09038104116916656,
+    "var": 0.00816873274743557,
+    "min": -0.2382422685623169,
+    "max": 0.25005385279655457,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.00022496131714433432,
+    "std": 0.09033634513616562,
+    "var": 0.008160654455423355,
+    "min": -0.2490631341934204,
+    "max": 0.27263861894607544,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/B": {
+    "mean": 0.0011264102067798376,
+    "std": 0.09008853882551193,
+    "var": 0.008115945383906364,
+    "min": -0.2530417740345001,
+    "max": 0.2513330280780792,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/B": {
+    "mean": 0.0004782478208653629,
+    "std": 0.09054695814847946,
+    "var": 0.00819875206798315,
+    "min": -0.24251139163970947,
+    "max": 0.2475736439228058,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/B": {
+    "mean": -0.0007560790400020778,
+    "std": 0.09051965922117233,
+    "var": 0.008193809539079666,
+    "min": -0.24583832919597626,
+    "max": 0.24580419063568115,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.0005727780517190695,
+    "std": 0.08969476073980331,
+    "var": 0.008045149967074394,
+    "min": -0.23437173664569855,
+    "max": 0.26215773820877075,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/B": {
+    "mean": -0.0006841329741291702,
+    "std": 0.08875858783721924,
+    "var": 0.00787808746099472,
+    "min": -0.24301858246326447,
+    "max": 0.2612539231777191,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/B": {
+    "mean": 0.0010546323610469699,
+    "std": 0.08962210267782211,
+    "var": 0.008032120764255524,
+    "min": -0.26143360137939453,
+    "max": 0.25737255811691284,
+    "shape": [
+      128,
+      96
+    ]
+  }
+}
+==== Parameter Statistics: C Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.00044292950769886374,
+    "std": 0.1523311734199524,
+    "var": 0.023204784840345383,
+    "min": -0.8856900930404663,
+    "max": 0.7057631611824036,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0006968410452827811,
+    "std": 0.13800346851348877,
+    "var": 0.01904495805501938,
+    "min": -0.6563312411308289,
+    "max": 0.6074682474136353,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/C": {
+    "mean": 0.0004000807530246675,
+    "std": 0.14240767061710358,
+    "var": 0.02027994766831398,
+    "min": -0.7480111718177795,
+    "max": 0.6062194108963013,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/C": {
+    "mean": 0.0014037410728633404,
+    "std": 0.14231827855110168,
+    "var": 0.02025449462234974,
+    "min": -0.8631928563117981,
+    "max": 0.6556290984153748,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.0005673457053489983,
+    "std": 0.14673683047294617,
+    "var": 0.02153169736266136,
+    "min": -0.652769923210144,
+    "max": 0.5805004835128784,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0008504609577357769,
+    "std": 0.15804427862167358,
+    "var": 0.024977995082736015,
+    "min": -0.6446966528892517,
+    "max": 0.703652024269104,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/C": {
+    "mean": -0.0010978983482345939,
+    "std": 0.1599489003419876,
+    "var": 0.025583650916814804,
+    "min": -0.6892861723899841,
+    "max": 0.6483675241470337,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/C": {
+    "mean": 0.0007415583240799606,
+    "std": 0.1607930064201355,
+    "var": 0.025854390114545822,
+    "min": -0.6426854729652405,
+    "max": 0.6039724349975586,
+    "shape": [
+      96,
+      128
+    ]
+  }
+}
+==== Parameter Statistics: D Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.04408099502325058,
+    "std": 0.07453088462352753,
+    "var": 0.00555485300719738,
+    "min": -0.2606685757637024,
+    "max": 0.12077753990888596,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.009054574184119701,
+    "std": 0.24198102951049805,
+    "var": 0.05855482071638107,
+    "min": -1.0600413084030151,
+    "max": 1.121675968170166,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/D": {
+    "mean": -0.037600014358758926,
+    "std": 0.8748676776885986,
+    "var": 0.7653934359550476,
+    "min": -1.9809855222702026,
+    "max": 2.5074331760406494,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.126518115401268,
+    "std": 0.08594945818185806,
+    "var": 0.007387310266494751,
+    "min": -0.47814300656318665,
+    "max": 0.067568838596344,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.03844035416841507,
+    "std": 0.18312783539295197,
+    "var": 0.033535804599523544,
+    "min": -0.9110459685325623,
+    "max": 0.898239016532898,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.11642604321241379,
+    "std": 0.8089544177055359,
+    "var": 0.654407262802124,
+    "min": -2.067272901535034,
+    "max": 2.2302491664886475,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.1539212465286255,
+    "std": 0.07458867877721786,
+    "var": 0.005563471000641584,
+    "min": -0.3951839506626129,
+    "max": 0.01789148338139057,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.057479873299598694,
+    "std": 0.20249876379966736,
+    "var": 0.04100574925541878,
+    "min": -0.9740099906921387,
+    "max": 0.9253082275390625,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/D": {
+    "mean": -0.023443371057510376,
+    "std": 0.7489174604415894,
+    "var": 0.5608773827552795,
+    "min": -1.6787232160568237,
+    "max": 1.6587141752243042,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/Dense_0/bias": {
+    "mean": -0.14159713685512543,
+    "std": 0.09108474105596542,
+    "var": 0.008296430110931396,
+    "min": -0.42190319299697876,
+    "max": 0.05531717464327812,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/Dense_0/kernel": {
+    "mean": -0.05129622295498848,
+    "std": 0.19792276620864868,
+    "var": 0.039173420518636703,
+    "min": -0.8435721397399902,
+    "max": 1.1530396938323975,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/D": {
+    "mean": -0.024251192808151245,
+    "std": 0.786154568195343,
+    "var": 0.6180390119552612,
+    "min": -1.54900324344635,
+    "max": 2.1335582733154297,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.13175132870674133,
+    "std": 0.07405174523591995,
+    "var": 0.005483660381287336,
+    "min": -0.3413844406604767,
+    "max": 0.03790123388171196,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.0501830168068409,
+    "std": 0.20218192040920258,
+    "var": 0.04087752848863602,
+    "min": -1.4891372919082642,
+    "max": 0.9042957425117493,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/D": {
+    "mean": 0.042798250913619995,
+    "std": 0.8365948796272278,
+    "var": 0.6998910307884216,
+    "min": -1.7040034532546997,
+    "max": 2.0114243030548096,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.14304175972938538,
+    "std": 0.06995169818401337,
+    "var": 0.0048932405188679695,
+    "min": -0.33986780047416687,
+    "max": 0.023949002847075462,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.05250320956110954,
+    "std": 0.22495144605636597,
+    "var": 0.05060315132141113,
+    "min": -0.9335249662399292,
+    "max": 0.917891800403595,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.11754152178764343,
+    "std": 0.8612503409385681,
+    "var": 0.7417520880699158,
+    "min": -2.677243232727051,
+    "max": 2.2120699882507324,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.15153288841247559,
+    "std": 0.08150152117013931,
+    "var": 0.006642497610300779,
+    "min": -0.3416094183921814,
+    "max": 0.06285972148180008,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.0663745254278183,
+    "std": 0.23409119248390198,
+    "var": 0.05479868873953819,
+    "min": -1.0364452600479126,
+    "max": 0.9668694138526917,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/D": {
+    "mean": 0.037697143852710724,
+    "std": 0.9268324971199036,
+    "var": 0.8590185046195984,
+    "min": -2.152158737182617,
+    "max": 2.383751630783081,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/Dense_0/bias": {
+    "mean": -0.14674454927444458,
+    "std": 0.08601731061935425,
+    "var": 0.007398977875709534,
+    "min": -0.34418240189552307,
+    "max": 0.06394793838262558,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/Dense_0/kernel": {
+    "mean": -0.05542290583252907,
+    "std": 0.22800379991531372,
+    "var": 0.0519857332110405,
+    "min": -1.207306981086731,
+    "max": 1.1744027137756348,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/D": {
+    "mean": 0.027313794940710068,
+    "std": 0.878328800201416,
+    "var": 0.7714614868164062,
+    "min": -2.130438804626465,
+    "max": 1.8239549398422241,
+    "shape": [
+      96
+    ]
+  }
+}
+==== Parameter Statistics: Other ====
+{
+  "decoder/bias": {
+    "mean": -0.004987947642803192,
+    "std": 0.0899745300412178,
+    "var": 0.008095416240394115,
+    "min": -0.1864190548658371,
+    "max": 0.19539834558963776,
+    "shape": [
+      20
+    ]
+  },
+  "decoder/kernel": {
+    "mean": -0.0020511201582849026,
+    "std": 0.17566969990730286,
+    "var": 0.030859846621751785,
+    "min": -0.5879072546958923,
+    "max": 0.5823743343353271,
+    "shape": [
+      96,
+      20
+    ]
+  },
+  "encoder/encoder/embedding": {
+    "mean": -0.0016019496833905578,
+    "std": 0.17703796923160553,
+    "var": 0.03134244307875633,
+    "min": -0.9236041903495789,
+    "max": 0.8916512727737427,
+    "shape": [
+      700,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": -0.01928548887372017,
+    "std": 0.10846246778964996,
+    "var": 0.011764107272028923,
+    "min": -0.27004778385162354,
+    "max": 0.29451507329940796,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 1.0116132497787476,
+    "std": 0.14032001793384552,
+    "var": 0.019689707085490227,
+    "min": 0.5989986658096313,
+    "max": 1.338382601737976,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -2.9771480560302734,
+    "std": 0.95550537109375,
+    "var": 0.9129905700683594,
+    "min": -4.598485469818115,
+    "max": -0.9668731689453125,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": -0.011302734725177288,
+    "std": 0.06593464314937592,
+    "var": 0.004347377456724644,
+    "min": -0.17318037152290344,
+    "max": 0.17773742973804474,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.7182621955871582,
+    "std": 0.1064758449792862,
+    "var": 0.011337105184793472,
+    "min": 0.49036189913749695,
+    "max": 1.060647964477539,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -2.930178165435791,
+    "std": 0.8401758670806885,
+    "var": 0.7058955430984497,
+    "min": -4.353396892547607,
+    "max": -0.8703095316886902,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": -0.008037224411964417,
+    "std": 0.0700521320104599,
+    "var": 0.004907301627099514,
+    "min": -0.21845412254333496,
+    "max": 0.136960968375206,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.7365646362304688,
+    "std": 0.1199355348944664,
+    "var": 0.014384533278644085,
+    "min": 0.4008048474788666,
+    "max": 1.045438528060913,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -3.112764835357666,
+    "std": 0.8365715742111206,
+    "var": 0.6998520493507385,
+    "min": -4.478420257568359,
+    "max": -1.025078296661377,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/LayerNorm_0/bias": {
+    "mean": -0.003721400862559676,
+    "std": 0.08555446565151215,
+    "var": 0.007319567259401083,
+    "min": -0.231951043009758,
+    "max": 0.19035810232162476,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/LayerNorm_0/scale": {
+    "mean": 0.7365850210189819,
+    "std": 0.12340445071458817,
+    "var": 0.01522865891456604,
+    "min": 0.4401897192001343,
+    "max": 1.1256529092788696,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/log_step": {
+    "mean": -3.0000457763671875,
+    "std": 0.8110933899879456,
+    "var": 0.6578724980354309,
+    "min": -4.480130672454834,
+    "max": -0.6769936680793762,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": -0.00851395819336176,
+    "std": 0.08363121002912521,
+    "var": 0.006994179449975491,
+    "min": -0.1714363694190979,
+    "max": 0.20705078542232513,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.7413811683654785,
+    "std": 0.12134841084480286,
+    "var": 0.014725437387824059,
+    "min": 0.4506276845932007,
+    "max": 1.1139858961105347,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -2.9415595531463623,
+    "std": 0.8972907066345215,
+    "var": 0.8051306009292603,
+    "min": -4.453625679016113,
+    "max": -1.206193208694458,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": -0.0012809111503884196,
+    "std": 0.07733694463968277,
+    "var": 0.005981002934277058,
+    "min": -0.18140476942062378,
+    "max": 0.2565213441848755,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.7667427062988281,
+    "std": 0.11521895974874496,
+    "var": 0.013275409117341042,
+    "min": 0.5121787190437317,
+    "max": 1.0868059396743774,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -3.1376051902770996,
+    "std": 0.8405399322509766,
+    "var": 0.7065073847770691,
+    "min": -4.580248832702637,
+    "max": -1.1820400953292847,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": -0.005065574310719967,
+    "std": 0.08503714948892593,
+    "var": 0.007231317460536957,
+    "min": -0.22883470356464386,
+    "max": 0.19781024754047394,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.8187799453735352,
+    "std": 0.14702528715133667,
+    "var": 0.021616434678435326,
+    "min": 0.5231627225875854,
+    "max": 1.3979684114456177,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -3.1364169120788574,
+    "std": 0.8789147734642029,
+    "var": 0.7724912166595459,
+    "min": -4.635166168212891,
+    "max": -1.2873016595840454,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/LayerNorm_0/bias": {
+    "mean": 0.007510041352361441,
+    "std": 0.08793449401855469,
+    "var": 0.00773247517645359,
+    "min": -0.19742736220359802,
+    "max": 0.24954666197299957,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/LayerNorm_0/scale": {
+    "mean": 0.796609103679657,
+    "std": 0.1463795006275177,
+    "var": 0.021426957100629807,
+    "min": 0.45371541380882263,
+    "max": 1.2370625734329224,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/log_step": {
+    "mean": -3.1398208141326904,
+    "std": 0.8943998217582703,
+    "var": 0.7999510765075684,
+    "min": -4.494646072387695,
+    "max": -1.115574836730957,
+    "shape": [
+      128
+    ]
+  }
+}
+| Eval  Metrics | accuracy:  0.92 | loss:  0.25
+-----------------------------------------------------------------------------------------
+[2025-02-25 16:12:33,750][absl][INFO] - Saving checkpoint at step: 1270
+[2025-02-25 16:12:33,752][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-25 16:12:33,752][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-25 16:12:33,753][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_1270.
+[2025-02-25 16:12:33,756][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-25 16:12:33,757][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_1270.orbax-checkpoint-tmp-5
+[2025-02-25 16:12:33,764][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-25 16:12:33,796][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-25 16:12:33,833][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 76.8 MiB/s (total bytes: 5.2 MiB) (time elapsed: 68 milliseconds) (per-host)
+[2025-02-25 16:12:34,075][absl][INFO] - ChainedFuture completed 1/1 futures in 0.24 seconds.
+[2025-02-25 16:12:34,075][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 16.9 MiB/s (total bytes: 5.2 MiB) (time elapsed: 310 milliseconds) (per-host)
+[2025-02-25 16:12:34,083][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-25 16:12:34,116][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_1270.orbax-checkpoint-tmp-5 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_1270
+[2025-02-25 16:12:34,123][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_1270`.
+[2025-02-25 16:12:34,123][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-25 16:12:34,125][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_1143
+-----------------------------------------------------------------------------------------
+| end of epoch  11 | time per epoch: 99.35s |
+| Train Metrics | accuracy:  0.82 | loss:  0.74
+| Eval  Metrics | accuracy:  0.89 | loss:  0.33
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  12 | time per epoch: 99.50s |
+| Train Metrics | accuracy:  0.83 | loss:  0.72
+| Eval  Metrics | accuracy:  0.90 | loss:  0.30
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  13 | time per epoch: 100.51s |
+| Train Metrics | accuracy:  0.84 | loss:  0.70
+| Eval  Metrics | accuracy:  0.89 | loss:  0.30
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  14 | time per epoch: 101.42s |
+| Train Metrics | accuracy:  0.84 | loss:  0.65
+| Eval  Metrics | accuracy:  0.85 | loss:  0.44
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  15 | time per epoch: 107.02s |
+| Train Metrics | accuracy:  0.85 | loss:  0.65
+| Eval  Metrics | accuracy:  0.89 | loss:  0.34
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  16 | time per epoch: 97.71s |
+| Train Metrics | accuracy:  0.85 | loss:  0.71
+| Eval  Metrics | accuracy:  0.87 | loss:  0.39
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  17 | time per epoch: 101.33s |
+| Train Metrics | accuracy:  0.88 | loss:  0.57
+| Eval  Metrics | accuracy:  0.87 | loss:  0.41
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  18 | time per epoch: 96.86s |
+| Train Metrics | accuracy:  0.86 | loss:  0.62
+| Eval  Metrics | accuracy:  0.86 | loss:  0.46
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  19 | time per epoch: 101.93s |
+| Train Metrics | accuracy:  0.87 | loss:  0.57
+| Eval  Metrics | accuracy:  0.90 | loss:  0.31
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  20 | time per epoch: 96.51s |
+| Train Metrics | accuracy:  0.86 | loss:  0.67
+==== Parameter Statistics: Lambda ====
+{}
+==== Parameter Statistics: B Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/B": {
+    "mean": 0.00037783593870699406,
+    "std": 0.09264625608921051,
+    "var": 0.008583328686654568,
+    "min": -0.2640116512775421,
+    "max": 0.262666791677475,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.00019805731426458806,
+    "std": 0.09302420914173126,
+    "var": 0.00865350291132927,
+    "min": -0.30814051628112793,
+    "max": 0.3392133116722107,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/B": {
+    "mean": 0.0010974840261042118,
+    "std": 0.0929306149482727,
+    "var": 0.008636098355054855,
+    "min": -0.28936389088630676,
+    "max": 0.2881098687648773,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/B": {
+    "mean": 0.0004978434881195426,
+    "std": 0.09314200282096863,
+    "var": 0.00867543276399374,
+    "min": -0.27570226788520813,
+    "max": 0.2935390770435333,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/B": {
+    "mean": -0.0006879544816911221,
+    "std": 0.09348059445619583,
+    "var": 0.008738621138036251,
+    "min": -0.2778685688972473,
+    "max": 0.3016289472579956,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.0005248395027592778,
+    "std": 0.09193320572376251,
+    "var": 0.008451715111732483,
+    "min": -0.26782476902008057,
+    "max": 0.3036954700946808,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/B": {
+    "mean": -0.0007530422881245613,
+    "std": 0.09079772979021072,
+    "var": 0.00824422761797905,
+    "min": -0.2684082090854645,
+    "max": 0.27560025453567505,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/B": {
+    "mean": 0.001045859302394092,
+    "std": 0.09225057810544968,
+    "var": 0.008510168641805649,
+    "min": -0.3310557007789612,
+    "max": 0.2883535325527191,
+    "shape": [
+      128,
+      96
+    ]
+  }
+}
+==== Parameter Statistics: C Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.0008057760423980653,
+    "std": 0.19243411719799042,
+    "var": 0.037030890583992004,
+    "min": -1.0753003358840942,
+    "max": 0.9728192090988159,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0011026659049093723,
+    "std": 0.17161883413791656,
+    "var": 0.02945302426815033,
+    "min": -0.8295645713806152,
+    "max": 0.8164374828338623,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/C": {
+    "mean": 0.0004381737671792507,
+    "std": 0.17855170369148254,
+    "var": 0.03188071399927139,
+    "min": -0.9434278011322021,
+    "max": 0.9122035503387451,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/C": {
+    "mean": 0.0011575426906347275,
+    "std": 0.17388594150543213,
+    "var": 0.030236322432756424,
+    "min": -1.05918288230896,
+    "max": 1.0012315511703491,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.0005223002517595887,
+    "std": 0.18251435458660126,
+    "var": 0.03331148996949196,
+    "min": -0.9011954665184021,
+    "max": 0.7729747891426086,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0007657416863366961,
+    "std": 0.2037932574748993,
+    "var": 0.041531696915626526,
+    "min": -1.0091413259506226,
+    "max": 1.1913952827453613,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/C": {
+    "mean": -0.0009441970614716411,
+    "std": 0.20958757400512695,
+    "var": 0.04392695054411888,
+    "min": -1.1274826526641846,
+    "max": 0.970304012298584,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/C": {
+    "mean": 0.00030306674307212234,
+    "std": 0.20628772675991058,
+    "var": 0.04255462810397148,
+    "min": -0.9192309379577637,
+    "max": 0.8659526705741882,
+    "shape": [
+      96,
+      128
+    ]
+  }
+}
+==== Parameter Statistics: D Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.09785793721675873,
+    "std": 0.09643394500017166,
+    "var": 0.00929950550198555,
+    "min": -0.31491804122924805,
+    "max": 0.1338125765323639,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.0274050310254097,
+    "std": 0.3110755980014801,
+    "var": 0.09676803648471832,
+    "min": -1.422501802444458,
+    "max": 1.342981219291687,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/D": {
+    "mean": -0.042493220418691635,
+    "std": 0.8448126316070557,
+    "var": 0.7137084007263184,
+    "min": -1.738665223121643,
+    "max": 2.852257013320923,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.23100267350673676,
+    "std": 0.12068978697061539,
+    "var": 0.014566024765372276,
+    "min": -0.6338399648666382,
+    "max": 0.03684917464852333,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.06489595025777817,
+    "std": 0.23036743700504303,
+    "var": 0.053069159388542175,
+    "min": -1.1395189762115479,
+    "max": 0.9722282886505127,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.09506111592054367,
+    "std": 0.6594226360321045,
+    "var": 0.4348382353782654,
+    "min": -2.000351667404175,
+    "max": 1.8965940475463867,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.24409696459770203,
+    "std": 0.10614878684282303,
+    "var": 0.011267565190792084,
+    "min": -0.5367050766944885,
+    "max": -0.025897322222590446,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.08367542177438736,
+    "std": 0.25003582239151,
+    "var": 0.062517911195755,
+    "min": -1.1534043550491333,
+    "max": 1.0789940357208252,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/D": {
+    "mean": -0.03259335458278656,
+    "std": 0.6555151343345642,
+    "var": 0.4297001361846924,
+    "min": -1.952736258506775,
+    "max": 1.9820976257324219,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/Dense_0/bias": {
+    "mean": -0.21932701766490936,
+    "std": 0.1124444305896759,
+    "var": 0.012643749825656414,
+    "min": -0.48527851700782776,
+    "max": 0.08101076632738113,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/Dense_0/kernel": {
+    "mean": -0.07137235999107361,
+    "std": 0.24108628928661346,
+    "var": 0.058122601360082626,
+    "min": -1.0608009099960327,
+    "max": 1.1933799982070923,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/D": {
+    "mean": -0.0014770030975341797,
+    "std": 0.6561660170555115,
+    "var": 0.4305538535118103,
+    "min": -1.1097040176391602,
+    "max": 2.3459112644195557,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.21450476348400116,
+    "std": 0.10295034945011139,
+    "var": 0.010598774068057537,
+    "min": -0.4701865017414093,
+    "max": 0.009758505038917065,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.07315005362033844,
+    "std": 0.251224160194397,
+    "var": 0.06311357766389847,
+    "min": -1.503640055656433,
+    "max": 1.027701497077942,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/D": {
+    "mean": 0.05699943006038666,
+    "std": 0.6939914226531982,
+    "var": 0.4816240966320038,
+    "min": -1.6548398733139038,
+    "max": 1.9277236461639404,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.22207099199295044,
+    "std": 0.09821954369544983,
+    "var": 0.009647078812122345,
+    "min": -0.4146394431591034,
+    "max": 0.07044864445924759,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.07821022719144821,
+    "std": 0.27941474318504333,
+    "var": 0.07807260006666183,
+    "min": -1.2822155952453613,
+    "max": 1.0837020874023438,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.09018244594335556,
+    "std": 0.8039824366569519,
+    "var": 0.6463877558708191,
+    "min": -2.3069448471069336,
+    "max": 2.2599680423736572,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.20744673907756805,
+    "std": 0.08996641635894775,
+    "var": 0.008093956857919693,
+    "min": -0.3662373423576355,
+    "max": 0.04452919960021973,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.09054183959960938,
+    "std": 0.289131760597229,
+    "var": 0.08359716832637787,
+    "min": -1.3057016134262085,
+    "max": 1.4164705276489258,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/D": {
+    "mean": 0.04682404547929764,
+    "std": 0.8722500205039978,
+    "var": 0.7608200907707214,
+    "min": -1.8376976251602173,
+    "max": 2.113342761993408,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/Dense_0/bias": {
+    "mean": -0.19889304041862488,
+    "std": 0.10764075815677643,
+    "var": 0.01158653199672699,
+    "min": -0.4030831456184387,
+    "max": 0.10477639734745026,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/Dense_0/kernel": {
+    "mean": -0.07761313021183014,
+    "std": 0.2800924479961395,
+    "var": 0.07845178246498108,
+    "min": -1.2874540090560913,
+    "max": 1.3215550184249878,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/D": {
+    "mean": 0.05034437030553818,
+    "std": 0.8246241211891174,
+    "var": 0.6800049543380737,
+    "min": -2.0496649742126465,
+    "max": 1.7350399494171143,
+    "shape": [
+      96
+    ]
+  }
+}
+==== Parameter Statistics: Other ====
+{
+  "decoder/bias": {
+    "mean": -0.008054221048951149,
+    "std": 0.11169187724590302,
+    "var": 0.012475076131522655,
+    "min": -0.23570367693901062,
+    "max": 0.21360093355178833,
+    "shape": [
+      20
+    ]
+  },
+  "decoder/kernel": {
+    "mean": -0.0016016808804124594,
+    "std": 0.21165186166763306,
+    "var": 0.04479650780558586,
+    "min": -0.7835733294487,
+    "max": 0.7761501669883728,
+    "shape": [
+      96,
+      20
+    ]
+  },
+  "encoder/encoder/embedding": {
+    "mean": -0.0021836659871041775,
+    "std": 0.22678132355213165,
+    "var": 0.05142976716160774,
+    "min": -1.3178163766860962,
+    "max": 1.2646185159683228,
+    "shape": [
+      700,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": -0.03714766353368759,
+    "std": 0.1403324455022812,
+    "var": 0.019693193957209587,
+    "min": -0.351406455039978,
+    "max": 0.3500078320503235,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.9687824249267578,
+    "std": 0.1495494693517685,
+    "var": 0.022365044802427292,
+    "min": 0.637705385684967,
+    "max": 1.3168492317199707,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -2.5237064361572266,
+    "std": 0.9488950371742249,
+    "var": 0.9004018306732178,
+    "min": -4.275203227996826,
+    "max": -0.3395460247993469,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": 0.005140714347362518,
+    "std": 0.08087434619665146,
+    "var": 0.006540659815073013,
+    "min": -0.18629227578639984,
+    "max": 0.23020213842391968,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.6251137256622314,
+    "std": 0.11689882725477219,
+    "var": 0.013665336184203625,
+    "min": 0.3968990743160248,
+    "max": 0.9415141940116882,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -2.4159176349639893,
+    "std": 0.8767765760421753,
+    "var": 0.7687371969223022,
+    "min": -4.310001850128174,
+    "max": -0.2111864537000656,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": 0.008503424935042858,
+    "std": 0.08524414151906967,
+    "var": 0.007266563829034567,
+    "min": -0.28366729617118835,
+    "max": 0.25527462363243103,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.6633455157279968,
+    "std": 0.15897038578987122,
+    "var": 0.0252715852111578,
+    "min": 0.3036864101886749,
+    "max": 1.1315706968307495,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -2.5819504261016846,
+    "std": 0.8519971370697021,
+    "var": 0.7258991003036499,
+    "min": -4.254469394683838,
+    "max": -0.25343623757362366,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/LayerNorm_0/bias": {
+    "mean": 0.0024944250471889973,
+    "std": 0.09754960983991623,
+    "var": 0.009515926241874695,
+    "min": -0.2889906167984009,
+    "max": 0.23336699604988098,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/LayerNorm_0/scale": {
+    "mean": 0.6659942269325256,
+    "std": 0.16297222673892975,
+    "var": 0.026559948921203613,
+    "min": 0.37078651785850525,
+    "max": 1.1599781513214111,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/log_step": {
+    "mean": -2.4729127883911133,
+    "std": 0.8144589066505432,
+    "var": 0.6633433103561401,
+    "min": -4.125765800476074,
+    "max": 0.029172614216804504,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": 0.00027380450046621263,
+    "std": 0.10507140308618546,
+    "var": 0.01104000024497509,
+    "min": -0.29995280504226685,
+    "max": 0.23860061168670654,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.6931626200675964,
+    "std": 0.1682833731174469,
+    "var": 0.02831929549574852,
+    "min": 0.3244396150112152,
+    "max": 1.3179417848587036,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -2.4423346519470215,
+    "std": 0.9125717878341675,
+    "var": 0.832787275314331,
+    "min": -4.148101329803467,
+    "max": -0.8006282448768616,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": -0.0002676974982023239,
+    "std": 0.10583779215812683,
+    "var": 0.011201637797057629,
+    "min": -0.3519466817378998,
+    "max": 0.24817149341106415,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.7197129130363464,
+    "std": 0.1566103845834732,
+    "var": 0.02452681213617325,
+    "min": 0.3910340368747711,
+    "max": 1.374815821647644,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -2.682455539703369,
+    "std": 0.8742474317550659,
+    "var": 0.7643085718154907,
+    "min": -4.179319381713867,
+    "max": -0.6259615421295166,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": -0.01223150547593832,
+    "std": 0.11244338750839233,
+    "var": 0.012643516063690186,
+    "min": -0.3224950134754181,
+    "max": 0.23834994435310364,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.7680668830871582,
+    "std": 0.1724948137998581,
+    "var": 0.029754459857940674,
+    "min": 0.4574422240257263,
+    "max": 1.3865102529525757,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -2.711690664291382,
+    "std": 0.9358854293823242,
+    "var": 0.875881552696228,
+    "min": -4.299585342407227,
+    "max": -0.6423817276954651,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/LayerNorm_0/bias": {
+    "mean": -0.012156578712165356,
+    "std": 0.09362220019102097,
+    "var": 0.008765115402638912,
+    "min": -0.265464186668396,
+    "max": 0.23366793990135193,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/LayerNorm_0/scale": {
+    "mean": 0.7488101720809937,
+    "std": 0.17170490324497223,
+    "var": 0.02948257327079773,
+    "min": 0.4009953737258911,
+    "max": 1.2468448877334595,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/log_step": {
+    "mean": -2.684758186340332,
+    "std": 0.9841499328613281,
+    "var": 0.9685511589050293,
+    "min": -4.209476470947266,
+    "max": -0.08725131303071976,
+    "shape": [
+      128
+    ]
+  }
+}
+| Eval  Metrics | accuracy:  0.91 | loss:  0.29
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  21 | time per epoch: 98.97s |
+| Train Metrics | accuracy:  0.88 | loss:  0.58
+| Eval  Metrics | accuracy:  0.91 | loss:  0.29
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  22 | time per epoch: 95.55s |
+| Train Metrics | accuracy:  0.87 | loss:  0.59
+| Eval  Metrics | accuracy:  0.89 | loss:  0.35
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  23 | time per epoch: 97.73s |
+| Train Metrics | accuracy:  0.87 | loss:  0.63
+| Eval  Metrics | accuracy:  0.91 | loss:  0.29
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  24 | time per epoch: 95.36s |
+| Train Metrics | accuracy:  0.89 | loss:  0.55
+| Eval  Metrics | accuracy:  0.93 | loss:  0.23
+-----------------------------------------------------------------------------------------
+[2025-02-25 16:40:01,927][absl][INFO] - Saving checkpoint at step: 3048
+[2025-02-25 16:40:01,929][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-25 16:40:01,929][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-25 16:40:01,931][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3048.
+[2025-02-25 16:40:01,939][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-25 16:40:01,940][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3048.orbax-checkpoint-tmp-6
+[2025-02-25 16:40:01,946][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-25 16:40:01,977][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-25 16:40:02,010][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 82.8 MiB/s (total bytes: 5.2 MiB) (time elapsed: 63 milliseconds) (per-host)
+[2025-02-25 16:40:02,271][absl][INFO] - ChainedFuture completed 1/1 futures in 0.26 seconds.
+[2025-02-25 16:40:02,271][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 16.2 MiB/s (total bytes: 5.2 MiB) (time elapsed: 324 milliseconds) (per-host)
+[2025-02-25 16:40:02,278][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-25 16:40:02,333][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3048.orbax-checkpoint-tmp-6 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3048
+[2025-02-25 16:40:02,347][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3048`.
+[2025-02-25 16:40:02,347][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-25 16:40:02,351][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_1270
+-----------------------------------------------------------------------------------------
+| end of epoch  25 | time per epoch: 96.00s |
+| Train Metrics | accuracy:  0.88 | loss:  0.56
+| Eval  Metrics | accuracy:  0.94 | loss:  0.23
+-----------------------------------------------------------------------------------------
+[2025-02-25 16:41:55,730][absl][INFO] - Saving checkpoint at step: 3175
+[2025-02-25 16:41:55,732][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-25 16:41:55,733][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-25 16:41:55,734][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3175.
+[2025-02-25 16:41:55,736][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-25 16:41:55,738][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3175.orbax-checkpoint-tmp-7
+[2025-02-25 16:41:55,745][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-25 16:41:55,778][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-25 16:41:55,813][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 78.0 MiB/s (total bytes: 5.2 MiB) (time elapsed: 67 milliseconds) (per-host)
+[2025-02-25 16:41:56,106][absl][INFO] - ChainedFuture completed 1/1 futures in 0.29 seconds.
+[2025-02-25 16:41:56,106][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 14.5 MiB/s (total bytes: 5.2 MiB) (time elapsed: 360 milliseconds) (per-host)
+[2025-02-25 16:41:56,112][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-25 16:41:56,146][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3175.orbax-checkpoint-tmp-7 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3175
+[2025-02-25 16:41:56,152][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3175`.
+[2025-02-25 16:41:56,152][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-25 16:41:56,154][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3048
+-----------------------------------------------------------------------------------------
+| end of epoch  26 | time per epoch: 96.58s |
+| Train Metrics | accuracy:  0.89 | loss:  0.53
+| Eval  Metrics | accuracy:  0.94 | loss:  0.22
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  27 | time per epoch: 101.48s |
+| Train Metrics | accuracy:  0.90 | loss:  0.50
+| Eval  Metrics | accuracy:  0.94 | loss:  0.22
+-----------------------------------------------------------------------------------------
+[2025-02-25 16:45:48,930][absl][INFO] - Saving checkpoint at step: 3429
+[2025-02-25 16:45:48,932][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-25 16:45:48,932][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-25 16:45:48,934][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3429.
+[2025-02-25 16:45:48,936][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-25 16:45:48,937][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3429.orbax-checkpoint-tmp-8
+[2025-02-25 16:45:48,943][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-25 16:45:48,975][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-25 16:45:49,372][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 12.3 MiB/s (total bytes: 5.2 MiB) (time elapsed: 427 milliseconds) (per-host)
+[2025-02-25 16:45:49,620][absl][INFO] - ChainedFuture completed 1/1 futures in 0.24 seconds.
+[2025-02-25 16:45:49,620][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 7.8 MiB/s (total bytes: 5.2 MiB) (time elapsed: 676 milliseconds) (per-host)
+[2025-02-25 16:45:49,626][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-25 16:45:49,658][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3429.orbax-checkpoint-tmp-8 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3429
+[2025-02-25 16:45:49,664][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3429`.
+[2025-02-25 16:45:49,664][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-25 16:45:49,666][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3175
+-----------------------------------------------------------------------------------------
+| end of epoch  28 | time per epoch: 102.11s |
+| Train Metrics | accuracy:  0.90 | loss:  0.51
+| Eval  Metrics | accuracy:  0.93 | loss:  0.24
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  29 | time per epoch: 98.42s |
+| Train Metrics | accuracy:  0.89 | loss:  0.58
+| Eval  Metrics | accuracy:  0.92 | loss:  0.24
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  30 | time per epoch: 98.39s |
+| Train Metrics | accuracy:  0.91 | loss:  0.45
+==== Parameter Statistics: Lambda ====
+{}
+==== Parameter Statistics: B Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/B": {
+    "mean": 0.00037809365312568843,
+    "std": 0.09419729560613632,
+    "var": 0.008873130194842815,
+    "min": -0.2755173444747925,
+    "max": 0.26766663789749146,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.00012575718574225903,
+    "std": 0.09511671215295792,
+    "var": 0.009047189727425575,
+    "min": -0.34618574380874634,
+    "max": 0.3941173851490021,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/B": {
+    "mean": 0.0010365316411480308,
+    "std": 0.09491332620382309,
+    "var": 0.009008538909256458,
+    "min": -0.303073525428772,
+    "max": 0.31704336404800415,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/B": {
+    "mean": 0.00044313547550700605,
+    "std": 0.09493544697761536,
+    "var": 0.009012739174067974,
+    "min": -0.3144145905971527,
+    "max": 0.3450935184955597,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/B": {
+    "mean": -0.0005927523598074913,
+    "std": 0.0955275446176529,
+    "var": 0.009125512093305588,
+    "min": -0.29526951909065247,
+    "max": 0.33295437693595886,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.0005426397547125816,
+    "std": 0.09382156282663345,
+    "var": 0.008802486583590508,
+    "min": -0.29377037286758423,
+    "max": 0.33292749524116516,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/B": {
+    "mean": -0.0007487196708098054,
+    "std": 0.09246239066123962,
+    "var": 0.00854929443448782,
+    "min": -0.2877630889415741,
+    "max": 0.31262344121932983,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/B": {
+    "mean": 0.0013420197647064924,
+    "std": 0.09440886229276657,
+    "var": 0.00891303364187479,
+    "min": -0.38707542419433594,
+    "max": 0.32679301500320435,
+    "shape": [
+      128,
+      96
+    ]
+  }
+}
+==== Parameter Statistics: C Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.0010652854107320309,
+    "std": 0.20745603740215302,
+    "var": 0.043038006871938705,
+    "min": -1.057631492614746,
+    "max": 1.1589895486831665,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.00117327063344419,
+    "std": 0.191585510969162,
+    "var": 0.03670500963926315,
+    "min": -1.0716692209243774,
+    "max": 1.0445829629898071,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/C": {
+    "mean": 0.00043193157762289047,
+    "std": 0.1952631175518036,
+    "var": 0.03812768682837486,
+    "min": -1.0024566650390625,
+    "max": 0.94134122133255,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/C": {
+    "mean": 0.0008799316128715873,
+    "std": 0.1897057741880417,
+    "var": 0.035988278687000275,
+    "min": -0.9980407357215881,
+    "max": 1.3257006406784058,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.00020464835688471794,
+    "std": 0.19802631437778473,
+    "var": 0.039214424788951874,
+    "min": -0.9653980135917664,
+    "max": 0.9266175627708435,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.000701475131791085,
+    "std": 0.2236405909061432,
+    "var": 0.05001511424779892,
+    "min": -1.344710350036621,
+    "max": 1.3203082084655762,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/C": {
+    "mean": -0.0006008418276906013,
+    "std": 0.22764471173286438,
+    "var": 0.05182211846113205,
+    "min": -1.3042800426483154,
+    "max": 1.1179018020629883,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/C": {
+    "mean": 1.4344735063787084e-05,
+    "std": 0.227058544754982,
+    "var": 0.0515555813908577,
+    "min": -1.0661596059799194,
+    "max": 0.9530559182167053,
+    "shape": [
+      96,
+      128
+    ]
+  }
+}
+==== Parameter Statistics: D Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.12900714576244354,
+    "std": 0.10785115510225296,
+    "var": 0.011631871573626995,
+    "min": -0.37658727169036865,
+    "max": 0.1448776125907898,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.0391710065305233,
+    "std": 0.3325265944004059,
+    "var": 0.11057393252849579,
+    "min": -1.8038477897644043,
+    "max": 1.4407997131347656,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/D": {
+    "mean": -0.05421736091375351,
+    "std": 0.8336875438690186,
+    "var": 0.6950348615646362,
+    "min": -1.7071019411087036,
+    "max": 2.96760892868042,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.2727152705192566,
+    "std": 0.12824612855911255,
+    "var": 0.016447070986032486,
+    "min": -0.6281130909919739,
+    "max": 0.09152162820100784,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.07698050886392593,
+    "std": 0.254898339509964,
+    "var": 0.06497316807508469,
+    "min": -1.2955636978149414,
+    "max": 1.1374239921569824,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.1024615615606308,
+    "std": 0.5666038990020752,
+    "var": 0.32103997468948364,
+    "min": -1.7977783679962158,
+    "max": 1.5066568851470947,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.2781411111354828,
+    "std": 0.11851511150598526,
+    "var": 0.014045832678675652,
+    "min": -0.6049617528915405,
+    "max": 0.08564071357250214,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.09487591683864594,
+    "std": 0.2658945620059967,
+    "var": 0.07069992274045944,
+    "min": -1.2007155418395996,
+    "max": 1.0724830627441406,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/D": {
+    "mean": -0.03759791702032089,
+    "std": 0.6108455061912537,
+    "var": 0.37313222885131836,
+    "min": -1.9713736772537231,
+    "max": 1.9443517923355103,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/Dense_0/bias": {
+    "mean": -0.25206080079078674,
+    "std": 0.11714722216129303,
+    "var": 0.013723473064601421,
+    "min": -0.5330394506454468,
+    "max": 0.13456876575946808,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/Dense_0/kernel": {
+    "mean": -0.07917100936174393,
+    "std": 0.2610262632369995,
+    "var": 0.06813470274209976,
+    "min": -1.183422565460205,
+    "max": 1.4143813848495483,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/D": {
+    "mean": 0.006777788512408733,
+    "std": 0.6259050369262695,
+    "var": 0.3917571008205414,
+    "min": -1.0515718460083008,
+    "max": 2.596426248550415,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.24029496312141418,
+    "std": 0.11457964032888412,
+    "var": 0.013128494843840599,
+    "min": -0.5027341246604919,
+    "max": 0.022701362147927284,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.08132389187812805,
+    "std": 0.2697632908821106,
+    "var": 0.07277224212884903,
+    "min": -1.2773926258087158,
+    "max": 1.0227316617965698,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/D": {
+    "mean": 0.08586757630109787,
+    "std": 0.6115870475769043,
+    "var": 0.3740386962890625,
+    "min": -1.2886919975280762,
+    "max": 1.9895869493484497,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.25789064168930054,
+    "std": 0.1086854562163353,
+    "var": 0.011812528595328331,
+    "min": -0.4494054615497589,
+    "max": 0.03856596350669861,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.09073620289564133,
+    "std": 0.2996261417865753,
+    "var": 0.08977583050727844,
+    "min": -1.458452820777893,
+    "max": 1.0311126708984375,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.05845392495393753,
+    "std": 0.7590568661689758,
+    "var": 0.5761672854423523,
+    "min": -2.2534031867980957,
+    "max": 2.192979097366333,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.22799885272979736,
+    "std": 0.09571226686239243,
+    "var": 0.009160839021205902,
+    "min": -0.46455758810043335,
+    "max": 0.01017297524958849,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.09851507842540741,
+    "std": 0.3070198595523834,
+    "var": 0.09426119923591614,
+    "min": -1.3626881837844849,
+    "max": 1.371546745300293,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/D": {
+    "mean": 0.07859697937965393,
+    "std": 0.7978211641311646,
+    "var": 0.6365185976028442,
+    "min": -1.5773078203201294,
+    "max": 2.0212128162384033,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/Dense_0/bias": {
+    "mean": -0.20886871218681335,
+    "std": 0.10979285091161728,
+    "var": 0.01205446943640709,
+    "min": -0.45554110407829285,
+    "max": 0.10628481209278107,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/Dense_0/kernel": {
+    "mean": -0.08341308683156967,
+    "std": 0.30136945843696594,
+    "var": 0.09082355350255966,
+    "min": -1.3011723756790161,
+    "max": 1.2043536901474,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/D": {
+    "mean": 0.09014929831027985,
+    "std": 0.7543695569038391,
+    "var": 0.5690734386444092,
+    "min": -1.8744183778762817,
+    "max": 1.7521355152130127,
+    "shape": [
+      96
+    ]
+  }
+}
+==== Parameter Statistics: Other ====
+{
+  "decoder/bias": {
+    "mean": -0.008029433898627758,
+    "std": 0.10777818411588669,
+    "var": 0.011616137810051441,
+    "min": -0.20638900995254517,
+    "max": 0.19312436878681183,
+    "shape": [
+      20
+    ]
+  },
+  "decoder/kernel": {
+    "mean": -0.0020952573977410793,
+    "std": 0.23639579117298126,
+    "var": 0.05588297173380852,
+    "min": -0.8671728372573853,
+    "max": 0.8766568899154663,
+    "shape": [
+      96,
+      20
+    ]
+  },
+  "encoder/encoder/embedding": {
+    "mean": -0.002590027404949069,
+    "std": 0.2542355954647064,
+    "var": 0.0646357387304306,
+    "min": -1.343268632888794,
+    "max": 1.3993111848831177,
+    "shape": [
+      700,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": -0.03672222048044205,
+    "std": 0.14560914039611816,
+    "var": 0.021202020347118378,
+    "min": -0.32569387555122375,
+    "max": 0.34202244877815247,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.9307668209075928,
+    "std": 0.15428782999515533,
+    "var": 0.023804735392332077,
+    "min": 0.6282687187194824,
+    "max": 1.285099744796753,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -2.2675204277038574,
+    "std": 0.9505558609962463,
+    "var": 0.9035565257072449,
+    "min": -4.432278633117676,
+    "max": 0.015374402515590191,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": 0.012677360326051712,
+    "std": 0.08351703733205795,
+    "var": 0.006975095719099045,
+    "min": -0.20490765571594238,
+    "max": 0.21744060516357422,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.6134930849075317,
+    "std": 0.1206769347190857,
+    "var": 0.014562922529876232,
+    "min": 0.360697478055954,
+    "max": 0.8644363880157471,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -2.144477605819702,
+    "std": 0.889490008354187,
+    "var": 0.7911925315856934,
+    "min": -4.221009731292725,
+    "max": -0.07612449675798416,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": 0.013106757774949074,
+    "std": 0.08639857172966003,
+    "var": 0.007464713882654905,
+    "min": -0.18675987422466278,
+    "max": 0.2991604208946228,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.6572226285934448,
+    "std": 0.15537071228027344,
+    "var": 0.02414005622267723,
+    "min": 0.35932284593582153,
+    "max": 1.1373289823532104,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -2.3055129051208496,
+    "std": 0.8271945118904114,
+    "var": 0.6842507719993591,
+    "min": -4.1222147941589355,
+    "max": -0.21881818771362305,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/LayerNorm_0/bias": {
+    "mean": -0.006525462493300438,
+    "std": 0.08565878868103027,
+    "var": 0.007337428629398346,
+    "min": -0.23355354368686676,
+    "max": 0.24949057400226593,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/LayerNorm_0/scale": {
+    "mean": 0.6563118696212769,
+    "std": 0.17969365417957306,
+    "var": 0.032289810478687286,
+    "min": 0.2698768079280853,
+    "max": 1.2659823894500732,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/log_step": {
+    "mean": -2.1960830688476562,
+    "std": 0.8059206604957581,
+    "var": 0.6495081782341003,
+    "min": -3.9483530521392822,
+    "max": 0.04668498411774635,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": 0.004102994687855244,
+    "std": 0.10395173728466034,
+    "var": 0.010805964469909668,
+    "min": -0.2474958300590515,
+    "max": 0.2559139132499695,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.6836103796958923,
+    "std": 0.17177094519138336,
+    "var": 0.029505258426070213,
+    "min": 0.37355202436447144,
+    "max": 1.499389410018921,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -2.166766881942749,
+    "std": 0.9220883250236511,
+    "var": 0.8502469062805176,
+    "min": -3.864047050476074,
+    "max": -0.6366453170776367,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": -0.007039315067231655,
+    "std": 0.09587058424949646,
+    "var": 0.00919116847217083,
+    "min": -0.29447317123413086,
+    "max": 0.22792333364486694,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.7245308756828308,
+    "std": 0.16475000977516174,
+    "var": 0.027142565697431564,
+    "min": 0.3783089220523834,
+    "max": 1.3834484815597534,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -2.4288787841796875,
+    "std": 0.8824636936187744,
+    "var": 0.7787421941757202,
+    "min": -3.8597285747528076,
+    "max": -0.3479330837726593,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": -0.009097769856452942,
+    "std": 0.10415264219045639,
+    "var": 0.010847772471606731,
+    "min": -0.3339027762413025,
+    "max": 0.1943449229001999,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.7852649092674255,
+    "std": 0.17677778005599976,
+    "var": 0.03125038370490074,
+    "min": 0.4949532449245453,
+    "max": 1.4562498331069946,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -2.463838577270508,
+    "std": 0.951960563659668,
+    "var": 0.9062288999557495,
+    "min": -4.0439324378967285,
+    "max": -0.06515081226825714,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/LayerNorm_0/bias": {
+    "mean": -0.01850719563663006,
+    "std": 0.11042707413434982,
+    "var": 0.012194138020277023,
+    "min": -0.329629123210907,
+    "max": 0.21289093792438507,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/LayerNorm_0/scale": {
+    "mean": 0.7787326574325562,
+    "std": 0.17722782492637634,
+    "var": 0.03140970319509506,
+    "min": 0.30958861112594604,
+    "max": 1.274609923362732,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/log_step": {
+    "mean": -2.4196743965148926,
+    "std": 1.0063296556472778,
+    "var": 1.0126994848251343,
+    "min": -3.9386179447174072,
+    "max": 0.22462990880012512,
+    "shape": [
+      128
+    ]
+  }
+}
+| Eval  Metrics | accuracy:  0.93 | loss:  0.20
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  31 | time per epoch: 99.45s |
+| Train Metrics | accuracy:  0.88 | loss:  0.58
+| Eval  Metrics | accuracy:  0.94 | loss:  0.24
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  32 | time per epoch: 96.99s |
+| Train Metrics | accuracy:  0.90 | loss:  0.51
+| Eval  Metrics | accuracy:  0.92 | loss:  0.26
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  33 | time per epoch: 99.36s |
+| Train Metrics | accuracy:  0.91 | loss:  0.49
+| Eval  Metrics | accuracy:  0.93 | loss:  0.25
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  34 | time per epoch: 98.87s |
+| Train Metrics | accuracy:  0.90 | loss:  0.56
+| Eval  Metrics | accuracy:  0.93 | loss:  0.27
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  35 | time per epoch: 106.28s |
+| Train Metrics | accuracy:  0.92 | loss:  0.46
+| Eval  Metrics | accuracy:  0.92 | loss:  0.30
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  36 | time per epoch: 98.15s |
+| Train Metrics | accuracy:  0.91 | loss:  0.50
+| Eval  Metrics | accuracy:  0.92 | loss:  0.30
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  37 | time per epoch: 98.81s |
+| Train Metrics | accuracy:  0.90 | loss:  0.55
+| Eval  Metrics | accuracy:  0.92 | loss:  0.30
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  38 | time per epoch: 103.72s |
+| Train Metrics | accuracy:  0.93 | loss:  0.41
+| Eval  Metrics | accuracy:  0.91 | loss:  0.28
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  39 | time per epoch: 97.59s |
+| Train Metrics | accuracy:  0.93 | loss:  0.40
+| Eval  Metrics | accuracy:  0.92 | loss:  0.28
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  40 | time per epoch: 99.88s |
+| Train Metrics | accuracy:  0.91 | loss:  0.50
+==== Parameter Statistics: Lambda ====
+{}
+==== Parameter Statistics: B Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/B": {
+    "mean": 0.0003379032132215798,
+    "std": 0.09490761160850525,
+    "var": 0.009007453918457031,
+    "min": -0.2825223505496979,
+    "max": 0.28588858246803284,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.0001083007882698439,
+    "std": 0.09605146199464798,
+    "var": 0.009225883521139622,
+    "min": -0.35950174927711487,
+    "max": 0.3839479088783264,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/B": {
+    "mean": 0.0010445340303704143,
+    "std": 0.09580011665821075,
+    "var": 0.009177662432193756,
+    "min": -0.3046010732650757,
+    "max": 0.31788936257362366,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/B": {
+    "mean": 0.0003568902611732483,
+    "std": 0.09573263674974442,
+    "var": 0.009164737537503242,
+    "min": -0.3322024643421173,
+    "max": 0.37060442566871643,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/B": {
+    "mean": -0.0005657090223394334,
+    "std": 0.09643984586000443,
+    "var": 0.009300644509494305,
+    "min": -0.2945679724216461,
+    "max": 0.33983734250068665,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.0003923217300325632,
+    "std": 0.09464862942695618,
+    "var": 0.00895836390554905,
+    "min": -0.3090813159942627,
+    "max": 0.3315512239933014,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/B": {
+    "mean": -0.0007019044714979827,
+    "std": 0.09311319887638092,
+    "var": 0.008670068345963955,
+    "min": -0.31220242381095886,
+    "max": 0.3215523958206177,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/B": {
+    "mean": 0.0014616817934438586,
+    "std": 0.09523984789848328,
+    "var": 0.009070629253983498,
+    "min": -0.40018346905708313,
+    "max": 0.3249113857746124,
+    "shape": [
+      128,
+      96
+    ]
+  }
+}
+==== Parameter Statistics: C Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.0010921582579612732,
+    "std": 0.20702674984931946,
+    "var": 0.04286007210612297,
+    "min": -1.0359629392623901,
+    "max": 1.1749918460845947,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0010213529458269477,
+    "std": 0.1957799792289734,
+    "var": 0.038329802453517914,
+    "min": -0.9946867823600769,
+    "max": 1.045579195022583,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/C": {
+    "mean": 0.00043297684169374406,
+    "std": 0.19789913296699524,
+    "var": 0.039164066314697266,
+    "min": -1.0626353025436401,
+    "max": 1.0763914585113525,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/C": {
+    "mean": 0.0010344423353672028,
+    "std": 0.19219450652599335,
+    "var": 0.03693872690200806,
+    "min": -0.9788967967033386,
+    "max": 1.3132047653198242,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.0004023237561341375,
+    "std": 0.20017611980438232,
+    "var": 0.04007048159837723,
+    "min": -0.9976815581321716,
+    "max": 0.9247052669525146,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0005752117140218616,
+    "std": 0.22277677059173584,
+    "var": 0.049629490822553635,
+    "min": -1.2641865015029907,
+    "max": 1.2417353391647339,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/C": {
+    "mean": -0.0007315488765016198,
+    "std": 0.22685924172401428,
+    "var": 0.05146511644124985,
+    "min": -1.230224609375,
+    "max": 0.9843895435333252,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/C": {
+    "mean": 0.0002053228672593832,
+    "std": 0.22625736892223358,
+    "var": 0.05119239538908005,
+    "min": -0.9922565221786499,
+    "max": 0.9828529357910156,
+    "shape": [
+      96,
+      128
+    ]
+  }
+}
+==== Parameter Statistics: D Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.1502493917942047,
+    "std": 0.1113719567656517,
+    "var": 0.012403713539242744,
+    "min": -0.4398137629032135,
+    "max": 0.11462297290563583,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.04641181603074074,
+    "std": 0.3304198384284973,
+    "var": 0.10917727649211884,
+    "min": -1.7860939502716064,
+    "max": 1.3195765018463135,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/D": {
+    "mean": -0.04848264157772064,
+    "std": 0.8536787033081055,
+    "var": 0.7287673950195312,
+    "min": -1.8602968454360962,
+    "max": 3.0031158924102783,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.2936047911643982,
+    "std": 0.13309872150421143,
+    "var": 0.017715271562337875,
+    "min": -0.607560396194458,
+    "max": 0.09679931402206421,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.08367256820201874,
+    "std": 0.25939565896987915,
+    "var": 0.06728610396385193,
+    "min": -1.2439955472946167,
+    "max": 1.3458751440048218,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.11966611444950104,
+    "std": 0.5293622612953186,
+    "var": 0.28022441267967224,
+    "min": -1.804432988166809,
+    "max": 1.252599835395813,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.2918892800807953,
+    "std": 0.10876542329788208,
+    "var": 0.011829918250441551,
+    "min": -0.5848925709724426,
+    "max": -0.01584559492766857,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.10011161863803864,
+    "std": 0.2663314938545227,
+    "var": 0.07093247026205063,
+    "min": -1.3955825567245483,
+    "max": 0.9774501919746399,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/D": {
+    "mean": -0.055551476776599884,
+    "std": 0.5745129585266113,
+    "var": 0.33006513118743896,
+    "min": -1.8700991868972778,
+    "max": 1.8727526664733887,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/Dense_0/bias": {
+    "mean": -0.26933011412620544,
+    "std": 0.11268991976976395,
+    "var": 0.012699018232524395,
+    "min": -0.5435348749160767,
+    "max": 0.0225374698638916,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/Dense_0/kernel": {
+    "mean": -0.08349934965372086,
+    "std": 0.26270395517349243,
+    "var": 0.06901336461305618,
+    "min": -1.1430792808532715,
+    "max": 1.2879797220230103,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/D": {
+    "mean": 0.007850687019526958,
+    "std": 0.6045728325843811,
+    "var": 0.3655083179473877,
+    "min": -1.133177399635315,
+    "max": 2.5315706729888916,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.24772509932518005,
+    "std": 0.11287026107311249,
+    "var": 0.012739695608615875,
+    "min": -0.5150901675224304,
+    "max": 0.08240637928247452,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.08343546092510223,
+    "std": 0.2709905803203583,
+    "var": 0.07343590259552002,
+    "min": -1.2103170156478882,
+    "max": 0.9920581579208374,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/D": {
+    "mean": 0.09555479139089584,
+    "std": 0.5758000016212463,
+    "var": 0.3315456509590149,
+    "min": -1.1252487897872925,
+    "max": 1.792438268661499,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.275175541639328,
+    "std": 0.10033709555864334,
+    "var": 0.010067532770335674,
+    "min": -0.502217173576355,
+    "max": -0.03592398762702942,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.09441915154457092,
+    "std": 0.295612633228302,
+    "var": 0.0873868316411972,
+    "min": -1.4372376203536987,
+    "max": 1.0400487184524536,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.0519523024559021,
+    "std": 0.7131587266921997,
+    "var": 0.5085954070091248,
+    "min": -2.1878156661987305,
+    "max": 1.9944771528244019,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.2306596338748932,
+    "std": 0.09631819278001785,
+    "var": 0.009277194738388062,
+    "min": -0.44845959544181824,
+    "max": 0.06879793107509613,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.09861072152853012,
+    "std": 0.3058162033557892,
+    "var": 0.09352356195449829,
+    "min": -1.286807656288147,
+    "max": 1.1979286670684814,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/D": {
+    "mean": 0.09382529556751251,
+    "std": 0.7354664206504822,
+    "var": 0.5409108996391296,
+    "min": -1.4915639162063599,
+    "max": 1.9006407260894775,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/Dense_0/bias": {
+    "mean": -0.20660273730754852,
+    "std": 0.10544651001691818,
+    "var": 0.011118967086076736,
+    "min": -0.4418814182281494,
+    "max": 0.12484883517026901,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/Dense_0/kernel": {
+    "mean": -0.08555609732866287,
+    "std": 0.2999736964702606,
+    "var": 0.0899842157959938,
+    "min": -1.1413270235061646,
+    "max": 1.0882865190505981,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/D": {
+    "mean": 0.12068916857242584,
+    "std": 0.6860455870628357,
+    "var": 0.470658540725708,
+    "min": -1.674755573272705,
+    "max": 1.645143747329712,
+    "shape": [
+      96
+    ]
+  }
+}
+==== Parameter Statistics: Other ====
+{
+  "decoder/bias": {
+    "mean": -0.008570115081965923,
+    "std": 0.10642004013061523,
+    "var": 0.011325225234031677,
+    "min": -0.22234070301055908,
+    "max": 0.17924362421035767,
+    "shape": [
+      20
+    ]
+  },
+  "decoder/kernel": {
+    "mean": -0.0021807458251714706,
+    "std": 0.24034281075000763,
+    "var": 0.05776466801762581,
+    "min": -0.8965660333633423,
+    "max": 0.9090835452079773,
+    "shape": [
+      96,
+      20
+    ]
+  },
+  "encoder/encoder/embedding": {
+    "mean": -0.002537448424845934,
+    "std": 0.2604046165943146,
+    "var": 0.06781056523323059,
+    "min": -1.3619232177734375,
+    "max": 1.3493404388427734,
+    "shape": [
+      700,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": -0.03546210378408432,
+    "std": 0.1455020159482956,
+    "var": 0.021170837804675102,
+    "min": -0.3194587230682373,
+    "max": 0.29705849289894104,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.8942422866821289,
+    "std": 0.14633136987686157,
+    "var": 0.021412871778011322,
+    "min": 0.5875443816184998,
+    "max": 1.2545572519302368,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -2.1021981239318848,
+    "std": 0.9502984285354614,
+    "var": 0.9030671119689941,
+    "min": -4.3102898597717285,
+    "max": 0.2088937759399414,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": 0.021176110953092575,
+    "std": 0.08656485378742218,
+    "var": 0.007493473589420319,
+    "min": -0.14207054674625397,
+    "max": 0.22815191745758057,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.6017962694168091,
+    "std": 0.11531007289886475,
+    "var": 0.01329641230404377,
+    "min": 0.3286745548248291,
+    "max": 0.854668915271759,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -2.004431962966919,
+    "std": 0.8921261429786682,
+    "var": 0.7958890199661255,
+    "min": -4.168900012969971,
+    "max": 0.038476310670375824,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": 0.028348907828330994,
+    "std": 0.0833316370844841,
+    "var": 0.006944162305444479,
+    "min": -0.12784908711910248,
+    "max": 0.33361104130744934,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.6446868777275085,
+    "std": 0.15108482539653778,
+    "var": 0.022826626896858215,
+    "min": 0.3740788996219635,
+    "max": 1.0827311277389526,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -2.129605293273926,
+    "std": 0.8126565217971802,
+    "var": 0.6604106426239014,
+    "min": -4.117708683013916,
+    "max": -0.16475240886211395,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/LayerNorm_0/bias": {
+    "mean": 0.00036615662975236773,
+    "std": 0.08804444968700409,
+    "var": 0.007751825265586376,
+    "min": -0.2689867913722992,
+    "max": 0.3094008266925812,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/LayerNorm_0/scale": {
+    "mean": 0.6403324007987976,
+    "std": 0.1762908399105072,
+    "var": 0.031078461557626724,
+    "min": 0.2765720784664154,
+    "max": 1.2529289722442627,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/log_step": {
+    "mean": -2.0580883026123047,
+    "std": 0.7936392426490784,
+    "var": 0.6298632025718689,
+    "min": -3.764925479888916,
+    "max": 0.1307491958141327,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": 0.006926912814378738,
+    "std": 0.10524336993694305,
+    "var": 0.011076167225837708,
+    "min": -0.24045562744140625,
+    "max": 0.24112172424793243,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.6812961101531982,
+    "std": 0.17145538330078125,
+    "var": 0.029396947473287582,
+    "min": 0.3209463059902191,
+    "max": 1.5799368619918823,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -2.0289950370788574,
+    "std": 0.9139178991317749,
+    "var": 0.8352458477020264,
+    "min": -3.720031976699829,
+    "max": -0.4810367226600647,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": 0.0058298311196267605,
+    "std": 0.09557495266199112,
+    "var": 0.009134571067988873,
+    "min": -0.24014058709144592,
+    "max": 0.1976153552532196,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.7040440440177917,
+    "std": 0.16656868159770966,
+    "var": 0.02774512767791748,
+    "min": 0.36924421787261963,
+    "max": 1.3722020387649536,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -2.268069267272949,
+    "std": 0.8694892525672913,
+    "var": 0.7560116052627563,
+    "min": -3.720925807952881,
+    "max": -0.2384769767522812,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": -0.009890185669064522,
+    "std": 0.1037740409374237,
+    "var": 0.010769052430987358,
+    "min": -0.3389022946357727,
+    "max": 0.24440215528011322,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.7951641082763672,
+    "std": 0.17104637622833252,
+    "var": 0.02925686351954937,
+    "min": 0.45480847358703613,
+    "max": 1.405819058418274,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -2.3242392539978027,
+    "std": 0.9462777972221375,
+    "var": 0.8954416513442993,
+    "min": -3.870201349258423,
+    "max": 0.03750297427177429,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/LayerNorm_0/bias": {
+    "mean": -0.01539029460400343,
+    "std": 0.10018345713615417,
+    "var": 0.010036725550889969,
+    "min": -0.315484881401062,
+    "max": 0.2079983949661255,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/LayerNorm_0/scale": {
+    "mean": 0.7872936725616455,
+    "std": 0.17038488388061523,
+    "var": 0.02903100848197937,
+    "min": 0.32498717308044434,
+    "max": 1.3157891035079956,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/log_step": {
+    "mean": -2.2569971084594727,
+    "std": 1.0139185190200806,
+    "var": 1.0280307531356812,
+    "min": -3.849083185195923,
+    "max": 0.36615365743637085,
+    "shape": [
+      128
+    ]
+  }
+}
+| Eval  Metrics | accuracy:  0.94 | loss:  0.21
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  41 | time per epoch: 104.12s |
+| Train Metrics | accuracy:  0.92 | loss:  0.48
+| Eval  Metrics | accuracy:  0.92 | loss:  0.29
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  42 | time per epoch: 99.27s |
+| Train Metrics | accuracy:  0.91 | loss:  0.49
+| Eval  Metrics | accuracy:  0.94 | loss:  0.21
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  43 | time per epoch: 101.72s |
+| Train Metrics | accuracy:  0.91 | loss:  0.53
+| Eval  Metrics | accuracy:  0.91 | loss:  0.30
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  44 | time per epoch: 105.17s |
+| Train Metrics | accuracy:  0.92 | loss:  0.49
+| Eval  Metrics | accuracy:  0.94 | loss:  0.22
+-----------------------------------------------------------------------------------------
+[2025-02-25 17:19:25,362][absl][INFO] - Saving checkpoint at step: 5588
+[2025-02-25 17:19:25,363][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-25 17:19:25,364][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-25 17:19:25,365][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_5588.
+[2025-02-25 17:19:25,373][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-25 17:19:25,375][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_5588.orbax-checkpoint-tmp-9
+[2025-02-25 17:19:25,384][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-25 17:19:25,415][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-25 17:19:25,452][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 78.5 MiB/s (total bytes: 5.2 MiB) (time elapsed: 66 milliseconds) (per-host)
+[2025-02-25 17:19:25,716][absl][INFO] - ChainedFuture completed 1/1 futures in 0.26 seconds.
+[2025-02-25 17:19:25,716][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 15.8 MiB/s (total bytes: 5.2 MiB) (time elapsed: 331 milliseconds) (per-host)
+[2025-02-25 17:19:25,721][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-25 17:19:25,753][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_5588.orbax-checkpoint-tmp-9 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_5588
+[2025-02-25 17:19:25,759][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_5588`.
+[2025-02-25 17:19:25,759][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-25 17:19:25,761][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_3429
+-----------------------------------------------------------------------------------------
+| end of epoch  45 | time per epoch: 101.63s |
+| Train Metrics | accuracy:  0.93 | loss:  0.46
+| Eval  Metrics | accuracy:  0.93 | loss:  0.25
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  46 | time per epoch: 99.47s |
+| Train Metrics | accuracy:  0.93 | loss:  0.41
+| Eval  Metrics | accuracy:  0.93 | loss:  0.26
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  47 | time per epoch: 98.64s |
+| Train Metrics | accuracy:  0.92 | loss:  0.48
+| Eval  Metrics | accuracy:  0.94 | loss:  0.23
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  48 | time per epoch: 98.31s |
+| Train Metrics | accuracy:  0.91 | loss:  0.56
+| Eval  Metrics | accuracy:  0.93 | loss:  0.27
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  49 | time per epoch: 99.42s |
+| Train Metrics | accuracy:  0.94 | loss:  0.40
+| Eval  Metrics | accuracy:  0.94 | loss:  0.23
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  50 | time per epoch: 97.84s |
+| Train Metrics | accuracy:  0.92 | loss:  0.50
+==== Parameter Statistics: Lambda ====
+{}
+==== Parameter Statistics: B Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/B": {
+    "mean": 0.00029912820900790393,
+    "std": 0.09511149674654007,
+    "var": 0.00904619786888361,
+    "min": -0.2863493263721466,
+    "max": 0.29351839423179626,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.00016502074140589684,
+    "std": 0.0962832123041153,
+    "var": 0.009270456619560719,
+    "min": -0.3762073516845703,
+    "max": 0.38816770911216736,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/B": {
+    "mean": 0.0010487480321899056,
+    "std": 0.09601923078298569,
+    "var": 0.009219693019986153,
+    "min": -0.30518051981925964,
+    "max": 0.3148369789123535,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/B": {
+    "mean": 0.0003692363970912993,
+    "std": 0.09590642899274826,
+    "var": 0.009198043495416641,
+    "min": -0.335317999124527,
+    "max": 0.37498828768730164,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/B": {
+    "mean": -0.000585237517952919,
+    "std": 0.09660686552524567,
+    "var": 0.009332885965704918,
+    "min": -0.3010559678077698,
+    "max": 0.34237900376319885,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.00039273512084037066,
+    "std": 0.09477634727954865,
+    "var": 0.008982555940747261,
+    "min": -0.31066542863845825,
+    "max": 0.32996347546577454,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/B": {
+    "mean": -0.0006426118779927492,
+    "std": 0.09324704855680466,
+    "var": 0.008695011958479881,
+    "min": -0.3156028389930725,
+    "max": 0.3264825642108917,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/B": {
+    "mean": 0.0014787774998694658,
+    "std": 0.09538097679615021,
+    "var": 0.00909753143787384,
+    "min": -0.40568751096725464,
+    "max": 0.3297846019268036,
+    "shape": [
+      128,
+      96
+    ]
+  }
+}
+==== Parameter Statistics: C Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.00103296700399369,
+    "std": 0.20164074003696442,
+    "var": 0.04065898805856705,
+    "min": -0.9795949459075928,
+    "max": 1.152259349822998,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0007875134469941258,
+    "std": 0.19174478948116302,
+    "var": 0.036766067147254944,
+    "min": -0.9802223443984985,
+    "max": 1.0501024723052979,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/C": {
+    "mean": 0.0004952481831423938,
+    "std": 0.19328537583351135,
+    "var": 0.03735923394560814,
+    "min": -1.0474876165390015,
+    "max": 1.1786930561065674,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/C": {
+    "mean": 0.0010411522816866636,
+    "std": 0.18757912516593933,
+    "var": 0.035185929387807846,
+    "min": -0.9254127144813538,
+    "max": 1.2659810781478882,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.00031286251032724977,
+    "std": 0.19489850103855133,
+    "var": 0.0379854291677475,
+    "min": -0.9822359085083008,
+    "max": 0.929875373840332,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0007312504458241165,
+    "std": 0.2156469225883484,
+    "var": 0.046503596007823944,
+    "min": -1.2632291316986084,
+    "max": 1.1513545513153076,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/C": {
+    "mean": -0.0005818455247208476,
+    "std": 0.22024603188037872,
+    "var": 0.04850831627845764,
+    "min": -1.1937808990478516,
+    "max": 0.9254676103591919,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/C": {
+    "mean": 0.00032080477103590965,
+    "std": 0.2189943939447403,
+    "var": 0.04795854538679123,
+    "min": -0.8848562240600586,
+    "max": 0.8967034220695496,
+    "shape": [
+      96,
+      128
+    ]
+  }
+}
+==== Parameter Statistics: D Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.15778183937072754,
+    "std": 0.11286664009094238,
+    "var": 0.012738878838717937,
+    "min": -0.4825040102005005,
+    "max": 0.13703607022762299,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.0479511097073555,
+    "std": 0.3247755467891693,
+    "var": 0.1054791510105133,
+    "min": -1.783123254776001,
+    "max": 1.3261133432388306,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/D": {
+    "mean": -0.047745805233716965,
+    "std": 0.850020170211792,
+    "var": 0.7225342988967896,
+    "min": -1.829086422920227,
+    "max": 2.98744797706604,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.2950274646282196,
+    "std": 0.1298758089542389,
+    "var": 0.016867727041244507,
+    "min": -0.6368205547332764,
+    "max": 0.05051059648394585,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.08470887690782547,
+    "std": 0.25669407844543457,
+    "var": 0.06589184701442719,
+    "min": -1.2300471067428589,
+    "max": 1.202853798866272,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.1327991932630539,
+    "std": 0.515201985836029,
+    "var": 0.26543307304382324,
+    "min": -1.6841028928756714,
+    "max": 1.1624892950057983,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.2923702001571655,
+    "std": 0.1011234000325203,
+    "var": 0.010225942358374596,
+    "min": -0.5689210891723633,
+    "max": -0.046523790806531906,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.09984201937913895,
+    "std": 0.2623191773891449,
+    "var": 0.06881135702133179,
+    "min": -1.357039451599121,
+    "max": 0.9030070304870605,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/D": {
+    "mean": -0.05553137883543968,
+    "std": 0.5553512573242188,
+    "var": 0.308415025472641,
+    "min": -1.8403031826019287,
+    "max": 1.8476076126098633,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/Dense_0/bias": {
+    "mean": -0.26925134658813477,
+    "std": 0.1118260994553566,
+    "var": 0.012505076825618744,
+    "min": -0.6204735040664673,
+    "max": 0.04921199381351471,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/Dense_0/kernel": {
+    "mean": -0.08282380551099777,
+    "std": 0.2596915066242218,
+    "var": 0.06743967533111572,
+    "min": -1.1053822040557861,
+    "max": 1.2479792833328247,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/D": {
+    "mean": 0.009311512112617493,
+    "std": 0.5808349847793579,
+    "var": 0.33736929297447205,
+    "min": -1.0678597688674927,
+    "max": 2.4628446102142334,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.2490728497505188,
+    "std": 0.10472522675991058,
+    "var": 0.010967372916638851,
+    "min": -0.4659547805786133,
+    "max": 0.036163829267024994,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.08253737539052963,
+    "std": 0.2665276825428009,
+    "var": 0.07103700190782547,
+    "min": -1.1644070148468018,
+    "max": 0.9169655442237854,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/D": {
+    "mean": 0.1065514087677002,
+    "std": 0.5597111582756042,
+    "var": 0.31327658891677856,
+    "min": -1.0606153011322021,
+    "max": 1.7606440782546997,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.2809341847896576,
+    "std": 0.09972964972257614,
+    "var": 0.009946003556251526,
+    "min": -0.5114582777023315,
+    "max": -0.034223929047584534,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.09555020928382874,
+    "std": 0.28842344880104065,
+    "var": 0.08318808674812317,
+    "min": -1.3797036409378052,
+    "max": 0.9458330869674683,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.03798947110772133,
+    "std": 0.6886962652206421,
+    "var": 0.47430258989334106,
+    "min": -2.1109840869903564,
+    "max": 1.9100168943405151,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.22556984424591064,
+    "std": 0.09137630462646484,
+    "var": 0.008349629119038582,
+    "min": -0.4348668158054352,
+    "max": 0.06763572990894318,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.0961676687002182,
+    "std": 0.29973557591438293,
+    "var": 0.08984141051769257,
+    "min": -1.2264577150344849,
+    "max": 1.2034491300582886,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/D": {
+    "mean": 0.1082737073302269,
+    "std": 0.6989986300468445,
+    "var": 0.48859915137290955,
+    "min": -1.4113646745681763,
+    "max": 1.8322114944458008,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/Dense_0/bias": {
+    "mean": -0.19706404209136963,
+    "std": 0.10078305006027222,
+    "var": 0.010157223790884018,
+    "min": -0.42217734456062317,
+    "max": 0.1247943714261055,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/Dense_0/kernel": {
+    "mean": -0.08166289329528809,
+    "std": 0.29560720920562744,
+    "var": 0.08738362789154053,
+    "min": -1.1495418548583984,
+    "max": 0.9719633460044861,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/D": {
+    "mean": 0.13898442685604095,
+    "std": 0.6522418856620789,
+    "var": 0.42541950941085815,
+    "min": -1.5319859981536865,
+    "max": 1.5871025323867798,
+    "shape": [
+      96
+    ]
+  }
+}
+==== Parameter Statistics: Other ====
+{
+  "decoder/bias": {
+    "mean": -0.007542166393250227,
+    "std": 0.10255169868469238,
+    "var": 0.010516851209104061,
+    "min": -0.21646109223365784,
+    "max": 0.17902705073356628,
+    "shape": [
+      20
+    ]
+  },
+  "decoder/kernel": {
+    "mean": -0.0021440894342958927,
+    "std": 0.24285432696342468,
+    "var": 0.05897822603583336,
+    "min": -0.9401359558105469,
+    "max": 0.9254428744316101,
+    "shape": [
+      96,
+      20
+    ]
+  },
+  "encoder/encoder/embedding": {
+    "mean": -0.002812535036355257,
+    "std": 0.25809240341186523,
+    "var": 0.06661169230937958,
+    "min": -1.4473159313201904,
+    "max": 1.3200193643569946,
+    "shape": [
+      700,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": -0.034277260303497314,
+    "std": 0.14386853575706482,
+    "var": 0.020698154345154762,
+    "min": -0.3192155659198761,
+    "max": 0.30776309967041016,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.8802334666252136,
+    "std": 0.1382606476545334,
+    "var": 0.019116008654236794,
+    "min": 0.5786082744598389,
+    "max": 1.2574384212493896,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -2.0168519020080566,
+    "std": 0.943559467792511,
+    "var": 0.890304446220398,
+    "min": -4.202060699462891,
+    "max": 0.3156577944755554,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": 0.0266824122518301,
+    "std": 0.08730696141719818,
+    "var": 0.007622505538165569,
+    "min": -0.15672659873962402,
+    "max": 0.21364858746528625,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.6008515954017639,
+    "std": 0.11189942061901093,
+    "var": 0.012521481141448021,
+    "min": 0.3438696563243866,
+    "max": 0.8586073517799377,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -1.9407989978790283,
+    "std": 0.8783352375030518,
+    "var": 0.7714727520942688,
+    "min": -4.14877462387085,
+    "max": 0.04952377825975418,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": 0.029134560376405716,
+    "std": 0.08276877552270889,
+    "var": 0.006850670091807842,
+    "min": -0.12571127712726593,
+    "max": 0.3274891972541809,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.6488792896270752,
+    "std": 0.14823243021965027,
+    "var": 0.021972855553030968,
+    "min": 0.4063512682914734,
+    "max": 1.1402534246444702,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -2.0634822845458984,
+    "std": 0.8010333180427551,
+    "var": 0.641654372215271,
+    "min": -4.086551666259766,
+    "max": -0.15218693017959595,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/LayerNorm_0/bias": {
+    "mean": 0.005130148492753506,
+    "std": 0.0867372676730156,
+    "var": 0.007523353677242994,
+    "min": -0.31634265184402466,
+    "max": 0.3296763002872467,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/LayerNorm_0/scale": {
+    "mean": 0.6416381597518921,
+    "std": 0.17051348090171814,
+    "var": 0.02907484769821167,
+    "min": 0.3057931065559387,
+    "max": 1.3099042177200317,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/log_step": {
+    "mean": -1.984387993812561,
+    "std": 0.7783281207084656,
+    "var": 0.6057946681976318,
+    "min": -3.6995251178741455,
+    "max": 0.10176658630371094,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": 0.00828324630856514,
+    "std": 0.10539954900741577,
+    "var": 0.011109065264463425,
+    "min": -0.2512166202068329,
+    "max": 0.27286607027053833,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.678511381149292,
+    "std": 0.16436146199703217,
+    "var": 0.02701469138264656,
+    "min": 0.369442343711853,
+    "max": 1.540624976158142,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -1.9601893424987793,
+    "std": 0.8973581194877625,
+    "var": 0.8052516579627991,
+    "min": -3.658985137939453,
+    "max": -0.43350765109062195,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": 0.010899407789111137,
+    "std": 0.0944732278585434,
+    "var": 0.00892519112676382,
+    "min": -0.244865283370018,
+    "max": 0.20513883233070374,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.7069426774978638,
+    "std": 0.15636181831359863,
+    "var": 0.024449018761515617,
+    "min": 0.4192183017730713,
+    "max": 1.3340188264846802,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -2.182352066040039,
+    "std": 0.8506383895874023,
+    "var": 0.7235857248306274,
+    "min": -3.6018683910369873,
+    "max": -0.21071556210517883,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": -0.006455041468143463,
+    "std": 0.09786127507686615,
+    "var": 0.009576830081641674,
+    "min": -0.30739593505859375,
+    "max": 0.21724803745746613,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.801074206829071,
+    "std": 0.16485711932182312,
+    "var": 0.027177870273590088,
+    "min": 0.5103541612625122,
+    "max": 1.3915791511535645,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -2.241398334503174,
+    "std": 0.9277582168579102,
+    "var": 0.860735297203064,
+    "min": -3.792328119277954,
+    "max": 0.12273413687944412,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/LayerNorm_0/bias": {
+    "mean": -0.012356470339000225,
+    "std": 0.09989465773105621,
+    "var": 0.009978942573070526,
+    "min": -0.3006029725074768,
+    "max": 0.20288558304309845,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/LayerNorm_0/scale": {
+    "mean": 0.8006769418716431,
+    "std": 0.16347931325435638,
+    "var": 0.026725485920906067,
+    "min": 0.3547928035259247,
+    "max": 1.2956517934799194,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/log_step": {
+    "mean": -2.1796200275421143,
+    "std": 0.9996211528778076,
+    "var": 0.9992424249649048,
+    "min": -3.797670841217041,
+    "max": 0.42393720149993896,
+    "shape": [
+      128
+    ]
+  }
+}
+| Eval  Metrics | accuracy:  0.94 | loss:  0.25
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  51 | time per epoch: 97.14s |
+| Train Metrics | accuracy:  0.93 | loss:  0.44
+| Eval  Metrics | accuracy:  0.94 | loss:  0.24
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  52 | time per epoch: 98.09s |
+| Train Metrics | accuracy:  0.93 | loss:  0.45
+| Eval  Metrics | accuracy:  0.95 | loss:  0.22
+-----------------------------------------------------------------------------------------
+[2025-02-25 17:35:03,323][absl][INFO] - Saving checkpoint at step: 6604
+[2025-02-25 17:35:03,324][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-25 17:35:03,324][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-25 17:35:03,325][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_6604.
+[2025-02-25 17:35:03,334][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-25 17:35:03,335][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_6604.orbax-checkpoint-tmp-10
+[2025-02-25 17:35:03,342][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-25 17:35:03,372][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-25 17:35:03,404][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 85.5 MiB/s (total bytes: 5.2 MiB) (time elapsed: 61 milliseconds) (per-host)
+[2025-02-25 17:35:03,655][absl][INFO] - ChainedFuture completed 1/1 futures in 0.25 seconds.
+[2025-02-25 17:35:03,655][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 16.8 MiB/s (total bytes: 5.2 MiB) (time elapsed: 312 milliseconds) (per-host)
+[2025-02-25 17:35:03,662][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-25 17:35:03,697][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_6604.orbax-checkpoint-tmp-10 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_6604
+[2025-02-25 17:35:03,704][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_6604`.
+[2025-02-25 17:35:03,704][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-25 17:35:03,705][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_5588
+-----------------------------------------------------------------------------------------
+| end of epoch  53 | time per epoch: 104.58s |
+| Train Metrics | accuracy:  0.95 | loss:  0.32
+| Eval  Metrics | accuracy:  0.94 | loss:  0.25
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  54 | time per epoch: 100.95s |
+| Train Metrics | accuracy:  0.94 | loss:  0.39
+| Eval  Metrics | accuracy:  0.94 | loss:  0.23
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  55 | time per epoch: 104.98s |
+| Train Metrics | accuracy:  0.93 | loss:  0.48
+| Eval  Metrics | accuracy:  0.94 | loss:  0.24
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  56 | time per epoch: 106.18s |
+| Train Metrics | accuracy:  0.94 | loss:  0.41
+| Eval  Metrics | accuracy:  0.94 | loss:  0.22
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  57 | time per epoch: 102.81s |
+| Train Metrics | accuracy:  0.94 | loss:  0.40
+| Eval  Metrics | accuracy:  0.94 | loss:  0.22
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  58 | time per epoch: 100.08s |
+| Train Metrics | accuracy:  0.94 | loss:  0.38
+| Eval  Metrics | accuracy:  0.94 | loss:  0.22
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  59 | time per epoch: 100.11s |
+| Train Metrics | accuracy:  0.93 | loss:  0.45
+| Eval  Metrics | accuracy:  0.94 | loss:  0.22
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  60 | time per epoch: 99.06s |
+| Train Metrics | accuracy:  0.95 | loss:  0.36
+==== Parameter Statistics: Lambda ====
+{}
+==== Parameter Statistics: B Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/B": {
+    "mean": 0.00030290542053990066,
+    "std": 0.09512622654438019,
+    "var": 0.009048999287188053,
+    "min": -0.28688353300094604,
+    "max": 0.29415929317474365,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.0001620956463739276,
+    "std": 0.0962940901517868,
+    "var": 0.009272551164031029,
+    "min": -0.3754320442676544,
+    "max": 0.3861241936683655,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/B": {
+    "mean": 0.0010530389845371246,
+    "std": 0.09603208303451538,
+    "var": 0.009222161024808884,
+    "min": -0.30644258856773376,
+    "max": 0.3144809603691101,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/B": {
+    "mean": 0.0003706473798956722,
+    "std": 0.09591789543628693,
+    "var": 0.009200243279337883,
+    "min": -0.33543795347213745,
+    "max": 0.37507790327072144,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/B": {
+    "mean": -0.0005865985294803977,
+    "std": 0.09661862999200821,
+    "var": 0.009335160255432129,
+    "min": -0.30182722210884094,
+    "max": 0.3428904414176941,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.0003958931192755699,
+    "std": 0.09478424489498138,
+    "var": 0.008984053507447243,
+    "min": -0.3103356659412384,
+    "max": 0.3297961950302124,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/B": {
+    "mean": -0.0006378947291523218,
+    "std": 0.0932454764842987,
+    "var": 0.008694719523191452,
+    "min": -0.31754136085510254,
+    "max": 0.326858788728714,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/B": {
+    "mean": 0.001473819836974144,
+    "std": 0.09538824111223221,
+    "var": 0.009098917245864868,
+    "min": -0.40533825755119324,
+    "max": 0.32929375767707825,
+    "shape": [
+      128,
+      96
+    ]
+  }
+}
+==== Parameter Statistics: C Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.0010075708851218224,
+    "std": 0.2000286877155304,
+    "var": 0.04001147300004959,
+    "min": -0.9736235737800598,
+    "max": 1.1467317342758179,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0007725547766312957,
+    "std": 0.19012585282325745,
+    "var": 0.036147840321063995,
+    "min": -0.9660318493843079,
+    "max": 1.0476157665252686,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/C": {
+    "mean": 0.0005598324351012707,
+    "std": 0.19163259863853455,
+    "var": 0.0367230549454689,
+    "min": -1.0352290868759155,
+    "max": 1.1911864280700684,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/C": {
+    "mean": 0.0009861858561635017,
+    "std": 0.18611255288124084,
+    "var": 0.03463787958025932,
+    "min": -0.911823034286499,
+    "max": 1.2465426921844482,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.000324469234328717,
+    "std": 0.19332081079483032,
+    "var": 0.03737293556332588,
+    "min": -0.9678078293800354,
+    "max": 0.9123200178146362,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0007608036394231021,
+    "std": 0.21372412145137787,
+    "var": 0.04567800089716911,
+    "min": -1.261142373085022,
+    "max": 1.158150553703308,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/C": {
+    "mean": -0.0005619708681479096,
+    "std": 0.2181367576122284,
+    "var": 0.047583647072315216,
+    "min": -1.1634916067123413,
+    "max": 0.9287497401237488,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/C": {
+    "mean": 0.00037777144461870193,
+    "std": 0.2171427607536316,
+    "var": 0.047150980681180954,
+    "min": -0.8737687468528748,
+    "max": 0.8822107911109924,
+    "shape": [
+      96,
+      128
+    ]
+  }
+}
+==== Parameter Statistics: D Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.15967226028442383,
+    "std": 0.11279260367155075,
+    "var": 0.01272217184305191,
+    "min": -0.4842698276042938,
+    "max": 0.13225935399532318,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.048565734177827835,
+    "std": 0.32318195700645447,
+    "var": 0.10444656759500504,
+    "min": -1.7887074947357178,
+    "max": 1.3434348106384277,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/D": {
+    "mean": -0.047524791210889816,
+    "std": 0.8510317206382751,
+    "var": 0.7242549657821655,
+    "min": -1.8127065896987915,
+    "max": 2.983912467956543,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.2948901057243347,
+    "std": 0.12830215692520142,
+    "var": 0.0164614450186491,
+    "min": -0.6226566433906555,
+    "max": 0.05254778638482094,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.08463265746831894,
+    "std": 0.2556268274784088,
+    "var": 0.06534507125616074,
+    "min": -1.2224310636520386,
+    "max": 1.212586522102356,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.13371464610099792,
+    "std": 0.5118588209152222,
+    "var": 0.2619994878768921,
+    "min": -1.6762819290161133,
+    "max": 1.1608800888061523,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.2920028567314148,
+    "std": 0.10046723484992981,
+    "var": 0.010093665681779385,
+    "min": -0.5528878569602966,
+    "max": -0.05960870906710625,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.09962108731269836,
+    "std": 0.2610376477241516,
+    "var": 0.0681406557559967,
+    "min": -1.3321388959884644,
+    "max": 0.8880677223205566,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/D": {
+    "mean": -0.05604885146021843,
+    "std": 0.5513625144958496,
+    "var": 0.3040006160736084,
+    "min": -1.8367085456848145,
+    "max": 1.8374863862991333,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/Dense_0/bias": {
+    "mean": -0.26817402243614197,
+    "std": 0.11081626266241074,
+    "var": 0.012280243448913097,
+    "min": -0.5976347923278809,
+    "max": 0.051581308245658875,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/Dense_0/kernel": {
+    "mean": -0.08240941166877747,
+    "std": 0.2589057683944702,
+    "var": 0.06703219562768936,
+    "min": -1.1157811880111694,
+    "max": 1.248146891593933,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/D": {
+    "mean": 0.0089957220479846,
+    "std": 0.5764304399490356,
+    "var": 0.3322720527648926,
+    "min": -1.0560734272003174,
+    "max": 2.4441471099853516,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.24583619832992554,
+    "std": 0.10340394079685211,
+    "var": 0.010692374780774117,
+    "min": -0.46247661113739014,
+    "max": 0.03194386884570122,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.0813426598906517,
+    "std": 0.2656896710395813,
+    "var": 0.07059100270271301,
+    "min": -1.1473160982131958,
+    "max": 0.9319123029708862,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/D": {
+    "mean": 0.10789971798658371,
+    "std": 0.5550808906555176,
+    "var": 0.30811482667922974,
+    "min": -1.0579272508621216,
+    "max": 1.7236313819885254,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.2786352038383484,
+    "std": 0.09773263335227966,
+    "var": 0.009551668539643288,
+    "min": -0.5176309943199158,
+    "max": -0.038838889449834824,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.09473270177841187,
+    "std": 0.28712841868400574,
+    "var": 0.0824427381157875,
+    "min": -1.3759229183197021,
+    "max": 0.9380300641059875,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.03528716415166855,
+    "std": 0.6817527413368225,
+    "var": 0.4647868275642395,
+    "min": -2.098442316055298,
+    "max": 1.8962682485580444,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.22140070796012878,
+    "std": 0.09051928669214249,
+    "var": 0.00819374155253172,
+    "min": -0.4130367934703827,
+    "max": 0.08600664138793945,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.09458519518375397,
+    "std": 0.29844632744789124,
+    "var": 0.08907021582126617,
+    "min": -1.2314748764038086,
+    "max": 1.2048321962356567,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/D": {
+    "mean": 0.11062902212142944,
+    "std": 0.6929026246070862,
+    "var": 0.48011404275894165,
+    "min": -1.4073351621627808,
+    "max": 1.8191652297973633,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/Dense_0/bias": {
+    "mean": -0.19227659702301025,
+    "std": 0.09874161332845688,
+    "var": 0.00974990613758564,
+    "min": -0.4167231619358063,
+    "max": 0.11933829635381699,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/Dense_0/kernel": {
+    "mean": -0.07967208325862885,
+    "std": 0.2947007417678833,
+    "var": 0.08684852719306946,
+    "min": -1.1519429683685303,
+    "max": 0.9551377296447754,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/D": {
+    "mean": 0.14404945075511932,
+    "std": 0.645060122013092,
+    "var": 0.4161025881767273,
+    "min": -1.506996512413025,
+    "max": 1.5851598978042603,
+    "shape": [
+      96
+    ]
+  }
+}
+==== Parameter Statistics: Other ====
+{
+  "decoder/bias": {
+    "mean": -0.007505345623940229,
+    "std": 0.10224907100200653,
+    "var": 0.010454872623085976,
+    "min": -0.2097553014755249,
+    "max": 0.181685671210289,
+    "shape": [
+      20
+    ]
+  },
+  "decoder/kernel": {
+    "mean": -0.002167604397982359,
+    "std": 0.24417097866535187,
+    "var": 0.0596194714307785,
+    "min": -0.9520072937011719,
+    "max": 0.9248639941215515,
+    "shape": [
+      96,
+      20
+    ]
+  },
+  "encoder/encoder/embedding": {
+    "mean": -0.0027852903585880995,
+    "std": 0.2564215064048767,
+    "var": 0.06575199961662292,
+    "min": -1.430294156074524,
+    "max": 1.316035270690918,
+    "shape": [
+      700,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": -0.033559929579496384,
+    "std": 0.14334487915039062,
+    "var": 0.02054775506258011,
+    "min": -0.3248853087425232,
+    "max": 0.31105533242225647,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.8772834539413452,
+    "std": 0.1384822428226471,
+    "var": 0.019177332520484924,
+    "min": 0.5775893330574036,
+    "max": 1.262269139289856,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -2.003781318664551,
+    "std": 0.9389061331748962,
+    "var": 0.8815447092056274,
+    "min": -4.178732395172119,
+    "max": 0.3303762674331665,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": 0.028311295434832573,
+    "std": 0.08782491832971573,
+    "var": 0.007713216356933117,
+    "min": -0.15752092003822327,
+    "max": 0.22746185958385468,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.600977897644043,
+    "std": 0.11117485910654068,
+    "var": 0.012359850108623505,
+    "min": 0.33462536334991455,
+    "max": 0.8527011275291443,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -1.9291119575500488,
+    "std": 0.8768245577812195,
+    "var": 0.7688213586807251,
+    "min": -4.140588760375977,
+    "max": 0.056620869785547256,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": 0.030228963121771812,
+    "std": 0.08254320174455643,
+    "var": 0.006813380401581526,
+    "min": -0.13394197821617126,
+    "max": 0.3275220990180969,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.648876428604126,
+    "std": 0.14661574363708496,
+    "var": 0.021496176719665527,
+    "min": 0.4006534814834595,
+    "max": 1.1151641607284546,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -2.0514075756073,
+    "std": 0.7979010939598083,
+    "var": 0.6366461515426636,
+    "min": -4.069972038269043,
+    "max": -0.14285102486610413,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/LayerNorm_0/bias": {
+    "mean": 0.007127640303224325,
+    "std": 0.08502615988254547,
+    "var": 0.007229448761790991,
+    "min": -0.3034172058105469,
+    "max": 0.31436046957969666,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/LayerNorm_0/scale": {
+    "mean": 0.6442784667015076,
+    "std": 0.16728287935256958,
+    "var": 0.027983564883470535,
+    "min": 0.31308746337890625,
+    "max": 1.3041749000549316,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_3/S5SSM_0/log_step": {
+    "mean": -1.971369981765747,
+    "std": 0.7754977345466614,
+    "var": 0.6013967394828796,
+    "min": -3.6943564414978027,
+    "max": 0.09948793053627014,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": 0.009174298495054245,
+    "std": 0.10381782799959183,
+    "var": 0.010778142139315605,
+    "min": -0.2519654631614685,
+    "max": 0.2770829498767853,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.6815252304077148,
+    "std": 0.16278889775276184,
+    "var": 0.026500225067138672,
+    "min": 0.3577152192592621,
+    "max": 1.5287052392959595,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -1.948984146118164,
+    "std": 0.8941547870635986,
+    "var": 0.7995128631591797,
+    "min": -3.649444103240967,
+    "max": -0.4289173185825348,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": 0.012001927010715008,
+    "std": 0.093781977891922,
+    "var": 0.008795060217380524,
+    "min": -0.23657724261283875,
+    "max": 0.2044963538646698,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.7100410461425781,
+    "std": 0.15582053363323212,
+    "var": 0.024280037730932236,
+    "min": 0.41187795996665955,
+    "max": 1.3324718475341797,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -2.169631242752075,
+    "std": 0.8489413857460022,
+    "var": 0.7207014560699463,
+    "min": -3.582671642303467,
+    "max": -0.21332788467407227,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": -0.00737895630300045,
+    "std": 0.0967324748635292,
+    "var": 0.009357171133160591,
+    "min": -0.3079228699207306,
+    "max": 0.22293740510940552,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.8049404621124268,
+    "std": 0.1646769642829895,
+    "var": 0.02711850218474865,
+    "min": 0.5162521600723267,
+    "max": 1.4004859924316406,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -2.2284178733825684,
+    "std": 0.9248740673065186,
+    "var": 0.8553920984268188,
+    "min": -3.7770802974700928,
+    "max": 0.12019459158182144,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/LayerNorm_0/bias": {
+    "mean": -0.01276366412639618,
+    "std": 0.09869301319122314,
+    "var": 0.009740310721099377,
+    "min": -0.2941693961620331,
+    "max": 0.19737161695957184,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/LayerNorm_0/scale": {
+    "mean": 0.8067264556884766,
+    "std": 0.16021321713924408,
+    "var": 0.025668274611234665,
+    "min": 0.3657020032405853,
+    "max": 1.2899622917175293,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_3/S5SSM_0/log_step": {
+    "mean": -2.167912006378174,
+    "std": 0.9963855743408203,
+    "var": 0.9927842617034912,
+    "min": -3.7774369716644287,
+    "max": 0.42187219858169556,
+    "shape": [
+      128
+    ]
+  }
+}
+| Eval  Metrics | accuracy:  0.94 | loss:  0.22
+-----------------------------------------------------------------------------------------
+[2025-02-25 17:51:09,394][absl][INFO] - Restoring orbax checkpoint from /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_6604
+[2025-02-25 17:51:09,395][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-25 17:51:09,403][absl][INFO] - Restoring checkpoint from /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_6604.
+[2025-02-25 17:51:09,740][absl][WARNING] - The transformations API will eventually be replaced by an upgraded design. The current API will not be removed until this point, but it will no longer be actively worked on.
+[2025-02-25 17:51:09,749][absl][INFO] - Finished restoring checkpoint from /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-25-15-50-14/checkpoints/checkpoint_6604.
+[2025-02-25 17:51:09,749][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:restore
+[SequenceLayer] Layer 0: using manual_lambda = -0.55
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 3: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 0: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 3: using manual_lambda = -0.4
+SSM: 96 -> 128 -> 96
+-----------------------------------------------------------------------------------------
+| End of Training |
+| Test  Metrics |  accuracy:  0.95 |  loss:  0.22
+-----------------------------------------------------------------------------------------

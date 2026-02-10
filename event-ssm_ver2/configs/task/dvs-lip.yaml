@@ -1,0 +1,42 @@
+# @package _global_
+
+defaults:
+  - /model: dvs-lip/small
+
+task:
+  name: dvs-lip-classification
+
+training:
+  num_epochs: 100
+  per_device_batch_size: 8
+  per_device_eval_batch_size: 2
+  num_workers: 0
+
+  # 数据增强/预处理相关参数
+  time_jitter: 5        # 时间扰动的标准差
+  spatial_jitter: 0.3   # 空间扰动的标准差
+  noise: 0.0
+  drop_event: 0.05
+  time_skew: 1.12
+  max_roll: 32
+  max_angle: 10
+  max_scale: 1.2
+  max_drop_chunk: 0.02
+  cut_mix: 0.4
+
+  slice_events: 65536   # 一次处理的事件数上限（并行切片）
+  pad_unit: 131072      # 对齐序列长度到此大小的整数倍
+  # slice_events: 524288
+  # pad_unit: 1048576       # 对齐序列长度到此大小的整数倍
+
+  validate_on_test: true
+
+optimizer:
+  # 学习率、权重衰减等优化器参数，可以根据需要微调
+  ssm_base_lr: 0.000012
+  lr_factor: 6
+  warmup_epochs: 10
+  ssm_weight_decay: 0.0
+  weight_decay: 0.02
+  schedule: cosine
+  accumulation_steps: 4

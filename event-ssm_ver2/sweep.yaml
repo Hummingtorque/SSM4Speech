@@ -1,0 +1,40 @@
+program: run_training.py
+method: bayes
+metric:
+  goal: maximize
+  name: Performance/Test accuracy
+parameters:
+  optimizer:
+    parameters:
+      lr_factor:
+        distribution: int_uniform
+        max: 15
+        min: 2
+      ssm_base_lr:
+        distribution: uniform
+        max: 3.0e-05
+        min: 8.0e-06
+      ssm_weight_decay:
+        distribution: uniform
+        max: 0.0005
+        min: 0.0
+      weight_decay:
+        distribution: uniform
+        max: 0.04
+        min: 0.005
+  training:
+    parameters:
+      per_device_batch_size:
+        distribution: int_uniform
+        max: 64
+        min: 4
+      per_device_eval_batch_size:
+        distribution: int_uniform
+        max: 64
+        min: 4
+command:
+- python
+- run_training.py 
+- task=dvs-lip
+   
+

@@ -1,0 +1,2192 @@
+WARNING:absl:Tensorflow library not found, tensorflow.io.gfile operations will use native shim calls. GCS paths (i.e. 'gs://...') cannot be accessed.
+INFO:2025-02-19 13:39:01,646:jax._src.xla_bridge:945: Unable to initialize backend 'rocm': module 'jaxlib.xla_extension' has no attribute 'GpuAllocatorConfig'
+seed: 1234
+checkpoint: null
+data_dir: ./data
+output_dir: ./outputs/${now:%Y-%m-%d-%H-%M-%S}
+checkpoint_dir: ./checkpoints
+model:
+  ssm_init:
+    C_init: lecun_normal
+    dt_min: 0.004
+    dt_max: 0.1
+    conj_sym: false
+    clip_eigs: false
+  ssm:
+    discretization: async
+    d_model: 96
+    d_ssm: 128
+    ssm_block_size: 8
+    num_stages: 2
+    num_layers_per_stage: 3
+    dropout: 0.23
+    classification_mode: pool
+    prenorm: true
+    batchnorm: false
+    bn_momentum: 0.95
+    pooling_stride: 8
+    pooling_mode: avgpool
+    state_expansion_factor: 1
+task:
+  name: shd-classification
+training:
+  num_epochs: 30
+  per_device_batch_size: 32
+  per_device_eval_batch_size: 128
+  num_workers: 4
+  time_jitter: 1
+  spatial_jitter: 0.55
+  noise: 35
+  max_drop_chunk: 0.02
+  drop_event: 0.1
+  time_skew: 1.2
+  cut_mix: 0.3
+  pad_unit: 8192
+  validate_on_test: true
+optimizer:
+  ssm_base_lr: 1.7e-05
+  lr_factor: 10
+  warmup_epochs: 3
+  ssm_weight_decay: 0.0
+  weight_decay: 0.03
+  schedule: cosine
+  accumulation_steps: 1
+logging:
+  log_dir: ${output_dir}
+  interval: 1000
+  wandb: false
+  summary_metric: Performance/Validation accuracy
+  project: ???
+  entity: ???
+
+[2025-02-19 13:39:01,646][jax._src.xla_bridge][INFO] - Unable to initialize backend 'rocm': module 'jaxlib.xla_extension' has no attribute 'GpuAllocatorConfig'
+INFO:2025-02-19 13:39:01,647:jax._src.xla_bridge:945: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+[2025-02-19 13:39:01,647][jax._src.xla_bridge][INFO] - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+[*] Loading dataset...
+[*] Generating Spiking Heidelberg Digits Classification Dataset
+[*] WARNING: Using test set for validation
+[*] Creating model...
+[*] Initializing model state...
+/sw/pkgs/arc/python/3.12.1/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: os.fork() was called. os.fork() is incompatible with multithreaded code, and JAX is multithreaded, so this will likely lead to a deadlock.
+  self.pid = os.fork()
+[SequenceLayer] Layer 0: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: [-1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1.]
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: [-1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1.]
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: [-1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1.]
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 0: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: [-1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1.]
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: [-1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1.]
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: [-1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1. -1.
+ -1. -1.]
+SSM: 96 -> 128 -> 96
+[*] Model parameter count: 274964
+[*] Using gradient accumulation with 1 steps
+[*] Running training on 2 GPUs
+[*] Logging to ./outputs/2025-02-19-13-39-00
+[*] Number of model parameters: 274964
+[*] Running training...
+[SequenceLayer] Layer 0: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 0: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96
+-----------------------------------------------------------------------------------------
+| end of epoch   1 | time per epoch: 78.19s |
+| Train Metrics | accuracy:  0.21 | loss:  2.64
+[SequenceLayer] Layer 0: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 0: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96
+| Eval  Metrics | accuracy:  0.62 | loss:  1.27
+-----------------------------------------------------------------------------------------
+[2025-02-19 13:41:05,612][absl][INFO] - Saving checkpoint at step: 127
+[2025-02-19 13:41:05,613][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-19 13:41:05,614][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-19 13:41:05,614][absl][INFO] - orbax-checkpoint version: 0.11.1
+[2025-02-19 13:41:05,616][absl][INFO] - [thread=MainThread] Failed to get flag value for EXPERIMENTAL_ORBAX_USE_DISTRIBUTED_PROCESS_ID.
+[2025-02-19 13:41:05,617][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_127.
+[2025-02-19 13:41:05,620][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-19 13:41:05,621][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_127.orbax-checkpoint-tmp-0
+[2025-02-19 13:41:05,629][absl][INFO] - Wrote Metadata={'item_handlers': None, 'metrics': {}, 'performance_metrics': {}, 'init_timestamp_nsecs': 1739990465624920905, 'commit_timestamp_nsecs': None, 'custom': {}}, json={"item_handlers": null, "metrics": {}, "performance_metrics": {}, "init_timestamp_nsecs": 1739990465624920905, "commit_timestamp_nsecs": null, "custom": {}} to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_127.orbax-checkpoint-tmp-0/_CHECKPOINT_METADATA
+[2025-02-19 13:41:05,629][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-19 13:41:05,655][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-19 13:41:05,681][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 82.1 MiB/s (total bytes: 4.2 MiB) (time elapsed: 51 milliseconds) (per-host)
+[2025-02-19 13:41:05,944][absl][INFO] - ChainedFuture completed 1/1 futures in 0.24 seconds.
+[2025-02-19 13:41:05,945][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 13.3 MiB/s (total bytes: 4.2 MiB) (time elapsed: 314 milliseconds) (per-host)
+[2025-02-19 13:41:05,947][absl][INFO] - Read Metadata={'item_handlers': None, 'metrics': {}, 'performance_metrics': {}, 'init_timestamp_nsecs': 1739990465624920905, 'commit_timestamp_nsecs': None, 'custom': {}} from /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_127.orbax-checkpoint-tmp-0/_CHECKPOINT_METADATA
+[2025-02-19 13:41:05,951][absl][INFO] - Updated Metadata={'item_handlers': 'orbax.checkpoint._src.handlers.pytree_checkpoint_handler.PyTreeCheckpointHandler', 'metrics': {}, 'performance_metrics': {}, 'init_timestamp_nsecs': 1739990465624920905, 'commit_timestamp_nsecs': None, 'custom': {}} to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_127.orbax-checkpoint-tmp-0/_CHECKPOINT_METADATA
+[2025-02-19 13:41:05,951][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-19 13:41:05,986][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_127.orbax-checkpoint-tmp-0 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_127
+[2025-02-19 13:41:05,993][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_127`.
+[2025-02-19 13:41:05,993][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[SequenceLayer] Layer 0: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 0: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96 (stride 8 with pooling mode avgpool)
+[SequenceLayer] Layer 1: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96
+[SequenceLayer] Layer 2: manual_lambda = -1.0
+[S5SSM] Using manual lambda: -1.0, resulting in Lambda with shape (128,) and values: Traced<ShapedArray(float32[128])>with<DynamicJaxprTrace>
+SSM: 96 -> 128 -> 96
+-----------------------------------------------------------------------------------------
+| end of epoch   2 | time per epoch: 73.98s |
+| Train Metrics | accuracy:  0.51 | loss:  1.63
+| Eval  Metrics | accuracy:  0.81 | loss:  0.74
+-----------------------------------------------------------------------------------------
+[2025-02-19 13:42:33,036][absl][INFO] - Saving checkpoint at step: 254
+[2025-02-19 13:42:33,037][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-19 13:42:33,037][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-19 13:42:33,039][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_254.
+[2025-02-19 13:42:33,040][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-19 13:42:33,041][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_254.orbax-checkpoint-tmp-1
+[2025-02-19 13:42:33,059][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-19 13:42:33,088][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-19 13:42:33,112][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 81.0 MiB/s (total bytes: 4.2 MiB) (time elapsed: 51 milliseconds) (per-host)
+[2025-02-19 13:42:33,547][absl][INFO] - ChainedFuture completed 1/1 futures in 0.43 seconds.
+[2025-02-19 13:42:33,548][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 8.6 MiB/s (total bytes: 4.2 MiB) (time elapsed: 487 milliseconds) (per-host)
+[2025-02-19 13:42:33,569][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-19 13:42:33,631][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_254.orbax-checkpoint-tmp-1 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_254
+[2025-02-19 13:42:33,647][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_254`.
+[2025-02-19 13:42:33,647][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-19 13:42:33,648][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_127
+-----------------------------------------------------------------------------------------
+| end of epoch   3 | time per epoch: 39.55s |
+| Train Metrics | accuracy:  0.66 | loss:  1.18
+| Eval  Metrics | accuracy:  0.81 | loss:  0.60
+-----------------------------------------------------------------------------------------
+[2025-02-19 13:43:32,733][absl][INFO] - Saving checkpoint at step: 381
+[2025-02-19 13:43:32,734][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-19 13:43:32,735][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-19 13:43:32,736][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_381.
+[2025-02-19 13:43:32,739][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-19 13:43:32,740][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_381.orbax-checkpoint-tmp-2
+[2025-02-19 13:43:32,747][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-19 13:43:32,774][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-19 13:43:32,808][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 69.2 MiB/s (total bytes: 4.2 MiB) (time elapsed: 60 milliseconds) (per-host)
+[2025-02-19 13:43:33,011][absl][INFO] - ChainedFuture completed 1/1 futures in 0.20 seconds.
+[2025-02-19 13:43:33,011][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 15.9 MiB/s (total bytes: 4.2 MiB) (time elapsed: 263 milliseconds) (per-host)
+[2025-02-19 13:43:33,017][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-19 13:43:33,054][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_381.orbax-checkpoint-tmp-2 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_381
+[2025-02-19 13:43:33,061][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_381`.
+[2025-02-19 13:43:33,061][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-19 13:43:33,063][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_254
+-----------------------------------------------------------------------------------------
+| end of epoch   4 | time per epoch: 30.84s |
+| Train Metrics | accuracy:  0.73 | loss:  1.00
+| Eval  Metrics | accuracy:  0.74 | loss:  0.70
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch   5 | time per epoch: 45.12s |
+| Train Metrics | accuracy:  0.75 | loss:  0.98
+| Eval  Metrics | accuracy:  0.85 | loss:  0.49
+-----------------------------------------------------------------------------------------
+[2025-02-19 13:45:11,457][absl][INFO] - Saving checkpoint at step: 635
+[2025-02-19 13:45:11,458][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-19 13:45:11,458][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-19 13:45:11,459][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_635.
+[2025-02-19 13:45:11,461][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-19 13:45:11,462][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_635.orbax-checkpoint-tmp-3
+[2025-02-19 13:45:11,470][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-19 13:45:11,496][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-19 13:45:11,527][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 74.2 MiB/s (total bytes: 4.2 MiB) (time elapsed: 56 milliseconds) (per-host)
+[2025-02-19 13:45:11,741][absl][INFO] - ChainedFuture completed 1/1 futures in 0.21 seconds.
+[2025-02-19 13:45:11,741][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 15.5 MiB/s (total bytes: 4.2 MiB) (time elapsed: 270 milliseconds) (per-host)
+[2025-02-19 13:45:11,747][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-19 13:45:11,780][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_635.orbax-checkpoint-tmp-3 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_635
+[2025-02-19 13:45:11,787][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_635`.
+[2025-02-19 13:45:11,787][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-19 13:45:11,789][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_381
+-----------------------------------------------------------------------------------------
+| end of epoch   6 | time per epoch: 49.67s |
+| Train Metrics | accuracy:  0.76 | loss:  0.95
+| Eval  Metrics | accuracy:  0.88 | loss:  0.39
+-----------------------------------------------------------------------------------------
+[2025-02-19 13:46:15,841][absl][INFO] - Saving checkpoint at step: 762
+[2025-02-19 13:46:15,842][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-19 13:46:15,842][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-19 13:46:15,844][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_762.
+[2025-02-19 13:46:15,845][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-19 13:46:15,847][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_762.orbax-checkpoint-tmp-4
+[2025-02-19 13:46:15,855][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-19 13:46:15,882][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-19 13:46:15,914][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 71.5 MiB/s (total bytes: 4.2 MiB) (time elapsed: 58 milliseconds) (per-host)
+[2025-02-19 13:46:16,114][absl][INFO] - ChainedFuture completed 1/1 futures in 0.20 seconds.
+[2025-02-19 13:46:16,114][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 16.2 MiB/s (total bytes: 4.2 MiB) (time elapsed: 258 milliseconds) (per-host)
+[2025-02-19 13:46:16,123][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-19 13:46:16,156][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_762.orbax-checkpoint-tmp-4 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_762
+[2025-02-19 13:46:16,163][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_762`.
+[2025-02-19 13:46:16,163][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-19 13:46:16,165][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_635
+-----------------------------------------------------------------------------------------
+| end of epoch   7 | time per epoch: 38.75s |
+| Train Metrics | accuracy:  0.81 | loss:  0.80
+| Eval  Metrics | accuracy:  0.80 | loss:  0.52
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch   8 | time per epoch: 30.97s |
+| Train Metrics | accuracy:  0.79 | loss:  0.87
+| Eval  Metrics | accuracy:  0.87 | loss:  0.43
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch   9 | time per epoch: 34.20s |
+| Train Metrics | accuracy:  0.83 | loss:  0.66
+| Eval  Metrics | accuracy:  0.89 | loss:  0.33
+-----------------------------------------------------------------------------------------
+[2025-02-19 13:48:41,423][absl][INFO] - Saving checkpoint at step: 1143
+[2025-02-19 13:48:41,424][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-19 13:48:41,425][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-19 13:48:41,426][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1143.
+[2025-02-19 13:48:41,427][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-19 13:48:41,429][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1143.orbax-checkpoint-tmp-5
+[2025-02-19 13:48:41,440][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-19 13:48:41,466][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-19 13:48:41,487][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 90.5 MiB/s (total bytes: 4.2 MiB) (time elapsed: 46 milliseconds) (per-host)
+[2025-02-19 13:48:41,708][absl][INFO] - ChainedFuture completed 1/1 futures in 0.21 seconds.
+[2025-02-19 13:48:41,708][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 15.7 MiB/s (total bytes: 4.2 MiB) (time elapsed: 267 milliseconds) (per-host)
+[2025-02-19 13:48:41,714][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-19 13:48:41,751][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1143.orbax-checkpoint-tmp-5 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1143
+[2025-02-19 13:48:41,758][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1143`.
+[2025-02-19 13:48:41,758][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-19 13:48:41,759][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_762
+-----------------------------------------------------------------------------------------
+| end of epoch  10 | time per epoch: 49.15s |
+| Train Metrics | accuracy:  0.79 | loss:  0.88
+==== Parameter Statistics: Lambda ====
+{}
+==== Parameter Statistics: B Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/B": {
+    "mean": 0.00023061750107444823,
+    "std": 0.09084855020046234,
+    "var": 0.008253458887338638,
+    "min": -0.26529473066329956,
+    "max": 0.23895901441574097,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.00017905631102621555,
+    "std": 0.09098678827285767,
+    "var": 0.00827859528362751,
+    "min": -0.26188603043556213,
+    "max": 0.2909201383590698,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/B": {
+    "mean": 0.0009849935304373503,
+    "std": 0.09030380845069885,
+    "var": 0.008154777809977531,
+    "min": -0.25450003147125244,
+    "max": 0.2638566792011261,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/B": {
+    "mean": -0.00046107530943118036,
+    "std": 0.09046704322099686,
+    "var": 0.008184285834431648,
+    "min": -0.25831592082977295,
+    "max": 0.2571544945240021,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.00010769449727376923,
+    "std": 0.0909854993224144,
+    "var": 0.008278361521661282,
+    "min": -0.2671726644039154,
+    "max": 0.2651519775390625,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/B": {
+    "mean": -0.000874265271704644,
+    "std": 0.09080926328897476,
+    "var": 0.00824632216244936,
+    "min": -0.2961586117744446,
+    "max": 0.274112731218338,
+    "shape": [
+      128,
+      96
+    ]
+  }
+}
+==== Parameter Statistics: C Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.0005040483083575964,
+    "std": 0.1574835181236267,
+    "var": 0.02480105683207512,
+    "min": -0.736017107963562,
+    "max": 0.7191157341003418,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0009479652508161962,
+    "std": 0.152828648686409,
+    "var": 0.023356597870588303,
+    "min": -0.5902374982833862,
+    "max": 0.7200815081596375,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/C": {
+    "mean": 0.000738886883482337,
+    "std": 0.15503354370594025,
+    "var": 0.02403540164232254,
+    "min": -0.6000664234161377,
+    "max": 0.5933010578155518,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.0009459179709665477,
+    "std": 0.15133565664291382,
+    "var": 0.022902479395270348,
+    "min": -0.8503255248069763,
+    "max": 0.6601702570915222,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0015018952544778585,
+    "std": 0.18602047860622406,
+    "var": 0.03460361808538437,
+    "min": -1.055984616279602,
+    "max": 0.7862332463264465,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/C": {
+    "mean": -0.0011174817336723208,
+    "std": 0.1924368143081665,
+    "var": 0.03703192621469498,
+    "min": -0.8211765885353088,
+    "max": 0.8868735432624817,
+    "shape": [
+      96,
+      128
+    ]
+  }
+}
+==== Parameter Statistics: D Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.08133821934461594,
+    "std": 0.08378684520721436,
+    "var": 0.00702023645862937,
+    "min": -0.28296607732772827,
+    "max": 0.11177300661802292,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.019300589337944984,
+    "std": 0.24594002962112427,
+    "var": 0.060486502945423126,
+    "min": -1.0206722021102905,
+    "max": 1.3981785774230957,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/D": {
+    "mean": -0.08560942113399506,
+    "std": 0.8781360387802124,
+    "var": 0.771122932434082,
+    "min": -1.7141053676605225,
+    "max": 2.852839469909668,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.15910501778125763,
+    "std": 0.09242597967386246,
+    "var": 0.008542561903595924,
+    "min": -0.5394294261932373,
+    "max": 0.03435622528195381,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.0578574612736702,
+    "std": 0.21078471839427948,
+    "var": 0.0444302000105381,
+    "min": -0.9402017593383789,
+    "max": 0.9986487627029419,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.1136595606803894,
+    "std": 0.8325523138046265,
+    "var": 0.693143367767334,
+    "min": -2.027604341506958,
+    "max": 2.0854859352111816,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.15389138460159302,
+    "std": 0.09057904034852982,
+    "var": 0.008204562589526176,
+    "min": -0.36329734325408936,
+    "max": 0.032845526933670044,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.059429287910461426,
+    "std": 0.2147321254014969,
+    "var": 0.0461098849773407,
+    "min": -0.8947127461433411,
+    "max": 0.8763212561607361,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/D": {
+    "mean": 0.01967145875096321,
+    "std": 0.7962530255317688,
+    "var": 0.6340188980102539,
+    "min": -1.6633076667785645,
+    "max": 1.7353594303131104,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.14002491533756256,
+    "std": 0.0809994786977768,
+    "var": 0.006560915615409613,
+    "min": -0.33253830671310425,
+    "max": 0.043220583349466324,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.04805295914411545,
+    "std": 0.2181396633386612,
+    "var": 0.04758491739630699,
+    "min": -0.9698143601417542,
+    "max": 1.1115407943725586,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/D": {
+    "mean": 0.01416034810245037,
+    "std": 0.874832808971405,
+    "var": 0.7653324007987976,
+    "min": -1.6703600883483887,
+    "max": 1.9577734470367432,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.13044974207878113,
+    "std": 0.10185569524765015,
+    "var": 0.010374583303928375,
+    "min": -0.34877878427505493,
+    "max": 0.17124177515506744,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.05253155902028084,
+    "std": 0.25922784209251404,
+    "var": 0.06719906628131866,
+    "min": -1.1932071447372437,
+    "max": 1.190179467201233,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.1089053750038147,
+    "std": 0.8274542689323425,
+    "var": 0.6846805810928345,
+    "min": -2.8566107749938965,
+    "max": 1.7552253007888794,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.13387838006019592,
+    "std": 0.0889781042933464,
+    "var": 0.007917102426290512,
+    "min": -0.36617961525917053,
+    "max": 0.0681782141327858,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.06540030986070633,
+    "std": 0.26797452569007874,
+    "var": 0.07181034237146378,
+    "min": -1.2247416973114014,
+    "max": 1.0334454774856567,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/D": {
+    "mean": 0.0338178351521492,
+    "std": 0.8727129697799683,
+    "var": 0.7616279125213623,
+    "min": -1.8888095617294312,
+    "max": 2.0662450790405273,
+    "shape": [
+      96
+    ]
+  }
+}
+==== Parameter Statistics: Other ====
+{
+  "decoder/bias": {
+    "mean": -0.009426447562873363,
+    "std": 0.1136561930179596,
+    "var": 0.012917730025947094,
+    "min": -0.2147737741470337,
+    "max": 0.22343380749225616,
+    "shape": [
+      20
+    ]
+  },
+  "decoder/kernel": {
+    "mean": -0.0007744563627056777,
+    "std": 0.1891845315694809,
+    "var": 0.03579078987240791,
+    "min": -0.6280726790428162,
+    "max": 0.7154863476753235,
+    "shape": [
+      96,
+      20
+    ]
+  },
+  "encoder/encoder/embedding": {
+    "mean": 0.0030571797396987677,
+    "std": 0.19697821140289307,
+    "var": 0.03880041837692261,
+    "min": -1.115628719329834,
+    "max": 0.9821692705154419,
+    "shape": [
+      700,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": -0.02974206581711769,
+    "std": 0.11633127182722092,
+    "var": 0.013532964512705803,
+    "min": -0.3366856575012207,
+    "max": 0.21569377183914185,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.9754473567008972,
+    "std": 0.12031484395265579,
+    "var": 0.01447566132992506,
+    "min": 0.7639186978340149,
+    "max": 1.3580524921417236,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -3.097371816635132,
+    "std": 1.0009934902191162,
+    "var": 1.0019879341125488,
+    "min": -5.064553260803223,
+    "max": -0.6846611499786377,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": -0.013783348724246025,
+    "std": 0.06352107971906662,
+    "var": 0.004034928046166897,
+    "min": -0.20461803674697876,
+    "max": 0.14036597311496735,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.7569887042045593,
+    "std": 0.12552383542060852,
+    "var": 0.015756234526634216,
+    "min": 0.4506860077381134,
+    "max": 1.1491268873214722,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -3.09658145904541,
+    "std": 0.8882188200950623,
+    "var": 0.7889326810836792,
+    "min": -4.968197822570801,
+    "max": -0.9173396825790405,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": -0.017865467816591263,
+    "std": 0.06862630695104599,
+    "var": 0.004709570202976465,
+    "min": -0.15935400128364563,
+    "max": 0.1878880262374878,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.8021583557128906,
+    "std": 0.14975538849830627,
+    "var": 0.022426677867770195,
+    "min": 0.49202924966812134,
+    "max": 1.2751638889312744,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -3.381135940551758,
+    "std": 0.9105668067932129,
+    "var": 0.8291319608688354,
+    "min": -4.977842807769775,
+    "max": -0.7081701159477234,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": -0.014822375029325485,
+    "std": 0.0841619223356247,
+    "var": 0.007083228789269924,
+    "min": -0.2571214437484741,
+    "max": 0.19968383014202118,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.7792164087295532,
+    "std": 0.13562914729118347,
+    "var": 0.01839526742696762,
+    "min": 0.5317890644073486,
+    "max": 1.2303290367126465,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -3.1773147583007812,
+    "std": 0.8563056588172913,
+    "var": 0.733259379863739,
+    "min": -4.640273094177246,
+    "max": -0.8886309266090393,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": 0.003956585191190243,
+    "std": 0.08737198263406754,
+    "var": 0.00763386394828558,
+    "min": -0.21173876523971558,
+    "max": 0.19947563111782074,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.8425633311271667,
+    "std": 0.13487105071544647,
+    "var": 0.01819019950926304,
+    "min": 0.5531368851661682,
+    "max": 1.2150624990463257,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -3.4272594451904297,
+    "std": 0.8111382722854614,
+    "var": 0.6579452753067017,
+    "min": -4.93654203414917,
+    "max": -1.2151386737823486,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": 0.0005958280526101589,
+    "std": 0.10108695924282074,
+    "var": 0.010218573734164238,
+    "min": -0.2383410781621933,
+    "max": 0.24675704538822174,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.8881393671035767,
+    "std": 0.16482248902320862,
+    "var": 0.027166452258825302,
+    "min": 0.4475615620613098,
+    "max": 1.4133694171905518,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -3.3489062786102295,
+    "std": 0.848518431186676,
+    "var": 0.7199835181236267,
+    "min": -4.763140678405762,
+    "max": -1.3520320653915405,
+    "shape": [
+      128
+    ]
+  }
+}
+| Eval  Metrics | accuracy:  0.88 | loss:  0.39
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  11 | time per epoch: 30.14s |
+| Train Metrics | accuracy:  0.82 | loss:  0.78
+| Eval  Metrics | accuracy:  0.85 | loss:  0.43
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  12 | time per epoch: 38.70s |
+| Train Metrics | accuracy:  0.85 | loss:  0.68
+| Eval  Metrics | accuracy:  0.89 | loss:  0.33
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  13 | time per epoch: 40.58s |
+| Train Metrics | accuracy:  0.86 | loss:  0.64
+| Eval  Metrics | accuracy:  0.92 | loss:  0.27
+-----------------------------------------------------------------------------------------
+[2025-02-19 13:52:14,872][absl][INFO] - Saving checkpoint at step: 1651
+[2025-02-19 13:52:14,874][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-19 13:52:14,874][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-19 13:52:14,876][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1651.
+[2025-02-19 13:52:14,880][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-19 13:52:14,885][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1651.orbax-checkpoint-tmp-6
+[2025-02-19 13:52:14,905][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-19 13:52:14,931][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-19 13:52:14,950][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 96.3 MiB/s (total bytes: 4.2 MiB) (time elapsed: 43 milliseconds) (per-host)
+[2025-02-19 13:52:15,182][absl][INFO] - ChainedFuture completed 1/1 futures in 0.23 seconds.
+[2025-02-19 13:52:15,182][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 15.2 MiB/s (total bytes: 4.2 MiB) (time elapsed: 275 milliseconds) (per-host)
+[2025-02-19 13:52:15,188][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-19 13:52:15,221][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1651.orbax-checkpoint-tmp-6 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1651
+[2025-02-19 13:52:15,228][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1651`.
+[2025-02-19 13:52:15,228][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-19 13:52:15,230][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1143
+-----------------------------------------------------------------------------------------
+| end of epoch  14 | time per epoch: 46.19s |
+| Train Metrics | accuracy:  0.85 | loss:  0.70
+| Eval  Metrics | accuracy:  0.92 | loss:  0.30
+-----------------------------------------------------------------------------------------
+[2025-02-19 13:53:15,850][absl][INFO] - Saving checkpoint at step: 1778
+[2025-02-19 13:53:15,851][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-19 13:53:15,851][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-19 13:53:15,852][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1778.
+[2025-02-19 13:53:15,854][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-19 13:53:15,856][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1778.orbax-checkpoint-tmp-7
+[2025-02-19 13:53:15,877][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-19 13:53:15,905][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-19 13:53:15,924][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 91.3 MiB/s (total bytes: 4.2 MiB) (time elapsed: 45 milliseconds) (per-host)
+[2025-02-19 13:53:16,460][absl][INFO] - ChainedFuture completed 1/1 futures in 0.53 seconds.
+[2025-02-19 13:53:16,460][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 7.2 MiB/s (total bytes: 4.2 MiB) (time elapsed: 582 milliseconds) (per-host)
+[2025-02-19 13:53:16,466][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-19 13:53:16,497][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1778.orbax-checkpoint-tmp-7 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1778
+[2025-02-19 13:53:16,504][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1778`.
+[2025-02-19 13:53:16,504][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-19 13:53:16,505][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1651
+-----------------------------------------------------------------------------------------
+| end of epoch  15 | time per epoch: 31.11s |
+| Train Metrics | accuracy:  0.87 | loss:  0.60
+| Eval  Metrics | accuracy:  0.91 | loss:  0.29
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  16 | time per epoch: 39.47s |
+| Train Metrics | accuracy:  0.86 | loss:  0.66
+| Eval  Metrics | accuracy:  0.90 | loss:  0.32
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  17 | time per epoch: 44.25s |
+| Train Metrics | accuracy:  0.88 | loss:  0.58
+| Eval  Metrics | accuracy:  0.91 | loss:  0.31
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  18 | time per epoch: 46.91s |
+| Train Metrics | accuracy:  0.87 | loss:  0.62
+| Eval  Metrics | accuracy:  0.92 | loss:  0.30
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  19 | time per epoch: 28.08s |
+| Train Metrics | accuracy:  0.87 | loss:  0.62
+| Eval  Metrics | accuracy:  0.92 | loss:  0.25
+-----------------------------------------------------------------------------------------
+[2025-02-19 13:57:31,742][absl][INFO] - Saving checkpoint at step: 2413
+[2025-02-19 13:57:31,743][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-19 13:57:31,743][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-19 13:57:31,745][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2413.
+[2025-02-19 13:57:31,746][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-19 13:57:31,747][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2413.orbax-checkpoint-tmp-8
+[2025-02-19 13:57:31,755][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-19 13:57:31,779][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-19 13:57:31,797][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 102.4 MiB/s (total bytes: 4.2 MiB) (time elapsed: 40 milliseconds) (per-host)
+[2025-02-19 13:57:31,991][absl][INFO] - ChainedFuture completed 1/1 futures in 0.19 seconds.
+[2025-02-19 13:57:31,991][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 17.8 MiB/s (total bytes: 4.2 MiB) (time elapsed: 235 milliseconds) (per-host)
+[2025-02-19 13:57:31,997][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-19 13:57:32,033][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2413.orbax-checkpoint-tmp-8 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2413
+[2025-02-19 13:57:32,039][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2413`.
+[2025-02-19 13:57:32,039][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-19 13:57:32,041][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_1778
+-----------------------------------------------------------------------------------------
+| end of epoch  20 | time per epoch: 40.87s |
+| Train Metrics | accuracy:  0.88 | loss:  0.62
+==== Parameter Statistics: Lambda ====
+{}
+==== Parameter Statistics: B Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/B": {
+    "mean": 0.00012540191528387368,
+    "std": 0.09205463528633118,
+    "var": 0.008474055677652359,
+    "min": -0.2761245667934418,
+    "max": 0.25229084491729736,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.00013121722440700978,
+    "std": 0.09249456971883774,
+    "var": 0.008555246517062187,
+    "min": -0.29535597562789917,
+    "max": 0.33800601959228516,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/B": {
+    "mean": 0.0009641320211812854,
+    "std": 0.09160609543323517,
+    "var": 0.008391676470637321,
+    "min": -0.2644360661506653,
+    "max": 0.27206599712371826,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/B": {
+    "mean": -0.0003922232426702976,
+    "std": 0.09185109287500381,
+    "var": 0.008436623029410839,
+    "min": -0.2624567151069641,
+    "max": 0.2821791172027588,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/B": {
+    "mean": -2.0675905034295283e-05,
+    "std": 0.09254904091358185,
+    "var": 0.008565325289964676,
+    "min": -0.3015705645084381,
+    "max": 0.2851853370666504,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/B": {
+    "mean": -0.0006676343618892133,
+    "std": 0.09244631230831146,
+    "var": 0.008546320721507072,
+    "min": -0.28405824303627014,
+    "max": 0.33628222346305847,
+    "shape": [
+      128,
+      96
+    ]
+  }
+}
+==== Parameter Statistics: C Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.0005076811066828668,
+    "std": 0.1718316227197647,
+    "var": 0.029526105150580406,
+    "min": -0.8559120297431946,
+    "max": 0.758465051651001,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0005608064820989966,
+    "std": 0.16659674048423767,
+    "var": 0.02775447629392147,
+    "min": -0.6871287226676941,
+    "max": 0.9673143625259399,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/C": {
+    "mean": 0.00030080031137913465,
+    "std": 0.16863355040550232,
+    "var": 0.028437277302145958,
+    "min": -0.7709037065505981,
+    "max": 0.9717533588409424,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.0008516345405951142,
+    "std": 0.1641102135181427,
+    "var": 0.026932161301374435,
+    "min": -1.0126492977142334,
+    "max": 0.7457576990127563,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0011094852816313505,
+    "std": 0.20614661276340485,
+    "var": 0.04249642416834831,
+    "min": -1.0085041522979736,
+    "max": 0.9390170574188232,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/C": {
+    "mean": -0.0007623248966410756,
+    "std": 0.21263059973716736,
+    "var": 0.04521177336573601,
+    "min": -1.0322299003601074,
+    "max": 1.0013835430145264,
+    "shape": [
+      96,
+      128
+    ]
+  }
+}
+==== Parameter Statistics: D Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.12812070548534393,
+    "std": 0.0999966710805893,
+    "var": 0.009999334812164307,
+    "min": -0.3453175127506256,
+    "max": 0.07770819216966629,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.03448587283492088,
+    "std": 0.277469277381897,
+    "var": 0.07698920369148254,
+    "min": -1.3134982585906982,
+    "max": 1.4907900094985962,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/D": {
+    "mean": -0.09449055045843124,
+    "std": 0.860532820224762,
+    "var": 0.7405167818069458,
+    "min": -1.654854655265808,
+    "max": 3.0698294639587402,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.20647475123405457,
+    "std": 0.10093345493078232,
+    "var": 0.010187562555074692,
+    "min": -0.6096961498260498,
+    "max": -0.010879488661885262,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.07030870765447617,
+    "std": 0.23847626149654388,
+    "var": 0.056870926171541214,
+    "min": -1.0219115018844604,
+    "max": 1.1624133586883545,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.09853200614452362,
+    "std": 0.7057855725288391,
+    "var": 0.49813324213027954,
+    "min": -2.134338140487671,
+    "max": 1.7751235961914062,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.1936851441860199,
+    "std": 0.1070382222533226,
+    "var": 0.01145718153566122,
+    "min": -0.4563639760017395,
+    "max": 0.13694915175437927,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.0697840228676796,
+    "std": 0.23766399919986725,
+    "var": 0.05648418143391609,
+    "min": -1.0104807615280151,
+    "max": 0.9422857165336609,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/D": {
+    "mean": 0.01713976263999939,
+    "std": 0.6911632418632507,
+    "var": 0.477706640958786,
+    "min": -1.5809255838394165,
+    "max": 1.6861732006072998,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.16616320610046387,
+    "std": 0.07825708389282227,
+    "var": 0.006124171894043684,
+    "min": -0.3375944495201111,
+    "max": 0.036978885531425476,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.053764719516038895,
+    "std": 0.23838064074516296,
+    "var": 0.05682532861828804,
+    "min": -1.020504117012024,
+    "max": 1.0467246770858765,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/D": {
+    "mean": 0.04650212079286575,
+    "std": 0.7634252905845642,
+    "var": 0.5828181505203247,
+    "min": -1.4850223064422607,
+    "max": 1.897469162940979,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.16237887740135193,
+    "std": 0.1126905307173729,
+    "var": 0.012699156999588013,
+    "min": -0.4440521001815796,
+    "max": 0.14124801754951477,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.06520740687847137,
+    "std": 0.28384870290756226,
+    "var": 0.08057008683681488,
+    "min": -1.359145998954773,
+    "max": 1.2169142961502075,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.07395391166210175,
+    "std": 0.7238154411315918,
+    "var": 0.523908793926239,
+    "min": -2.403505325317383,
+    "max": 1.4115464687347412,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.13508498668670654,
+    "std": 0.09835107624530792,
+    "var": 0.00967293418943882,
+    "min": -0.3483869135379791,
+    "max": 0.11881864815950394,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.07005269080400467,
+    "std": 0.2930666506290436,
+    "var": 0.08588805794715881,
+    "min": -1.2037196159362793,
+    "max": 1.077781081199646,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/D": {
+    "mean": 0.06509991735219955,
+    "std": 0.7560672760009766,
+    "var": 0.571637749671936,
+    "min": -1.5232819318771362,
+    "max": 1.764459252357483,
+    "shape": [
+      96
+    ]
+  }
+}
+==== Parameter Statistics: Other ====
+{
+  "decoder/bias": {
+    "mean": -0.009772109799087048,
+    "std": 0.11452322453260422,
+    "var": 0.013115569949150085,
+    "min": -0.23774120211601257,
+    "max": 0.22300978004932404,
+    "shape": [
+      20
+    ]
+  },
+  "decoder/kernel": {
+    "mean": -0.0006360280094668269,
+    "std": 0.21846598386764526,
+    "var": 0.04772738739848137,
+    "min": -0.719272792339325,
+    "max": 0.7915448546409607,
+    "shape": [
+      96,
+      20
+    ]
+  },
+  "encoder/encoder/embedding": {
+    "mean": 0.0031149249989539385,
+    "std": 0.22291328012943268,
+    "var": 0.049690332263708115,
+    "min": -1.262422800064087,
+    "max": 1.2518593072891235,
+    "shape": [
+      700,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": -0.038028668612241745,
+    "std": 0.13501186668872833,
+    "var": 0.018228204920887947,
+    "min": -0.3681006133556366,
+    "max": 0.25219985842704773,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.9533573985099792,
+    "std": 0.13475391268730164,
+    "var": 0.01815861649811268,
+    "min": 0.711731493473053,
+    "max": 1.4413809776306152,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -2.742159366607666,
+    "std": 0.9836959838867188,
+    "var": 0.9676578640937805,
+    "min": -4.918345928192139,
+    "max": -0.40970122814178467,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": -0.005313740111887455,
+    "std": 0.07565544545650482,
+    "var": 0.0057237460277974606,
+    "min": -0.20991264283657074,
+    "max": 0.16203570365905762,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.7419281005859375,
+    "std": 0.1431317925453186,
+    "var": 0.020486710593104362,
+    "min": 0.49060773849487305,
+    "max": 1.4262745380401611,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -2.714003324508667,
+    "std": 0.8907055854797363,
+    "var": 0.7933564186096191,
+    "min": -4.931093215942383,
+    "max": -0.560722291469574,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": -0.007566004991531372,
+    "std": 0.06913191825151443,
+    "var": 0.004779222421348095,
+    "min": -0.18665476143360138,
+    "max": 0.16369208693504333,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.7681002616882324,
+    "std": 0.16396647691726685,
+    "var": 0.026885008439421654,
+    "min": 0.4967353045940399,
+    "max": 1.3067703247070312,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -3.0230178833007812,
+    "std": 0.9084619879722595,
+    "var": 0.8253031969070435,
+    "min": -4.683619022369385,
+    "max": 0.008356703445315361,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": -0.019752949476242065,
+    "std": 0.08811277151107788,
+    "var": 0.007763860747218132,
+    "min": -0.25748950242996216,
+    "max": 0.22711887955665588,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.7582437992095947,
+    "std": 0.1567668467760086,
+    "var": 0.024575844407081604,
+    "min": 0.4588890075683594,
+    "max": 1.532535195350647,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -2.855790376663208,
+    "std": 0.8609480857849121,
+    "var": 0.7412315607070923,
+    "min": -4.488010406494141,
+    "max": -0.478845477104187,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": 0.002701879944652319,
+    "std": 0.10443403571844101,
+    "var": 0.010906468145549297,
+    "min": -0.27646753191947937,
+    "max": 0.29052960872650146,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.843418538570404,
+    "std": 0.15186651051044464,
+    "var": 0.023063436150550842,
+    "min": 0.5804370641708374,
+    "max": 1.5202350616455078,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -3.1162047386169434,
+    "std": 0.831921398639679,
+    "var": 0.6920931935310364,
+    "min": -4.694179058074951,
+    "max": -0.8465089201927185,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": -0.005386283155530691,
+    "std": 0.11258779466152191,
+    "var": 0.012676010839641094,
+    "min": -0.2872447669506073,
+    "max": 0.3402051627635956,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.8939746618270874,
+    "std": 0.15767979621887207,
+    "var": 0.02486291527748108,
+    "min": 0.5249677896499634,
+    "max": 1.3206462860107422,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -3.0560035705566406,
+    "std": 0.8928481340408325,
+    "var": 0.797177791595459,
+    "min": -4.477697849273682,
+    "max": -1.0871453285217285,
+    "shape": [
+      128
+    ]
+  }
+}
+| Eval  Metrics | accuracy:  0.92 | loss:  0.27
+-----------------------------------------------------------------------------------------
+[2025-02-19 13:58:19,966][absl][INFO] - Saving checkpoint at step: 2540
+[2025-02-19 13:58:19,966][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-19 13:58:19,967][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-19 13:58:19,968][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2540.
+[2025-02-19 13:58:19,969][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-19 13:58:19,970][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2540.orbax-checkpoint-tmp-9
+[2025-02-19 13:58:19,977][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-19 13:58:20,003][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-19 13:58:20,033][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 76.1 MiB/s (total bytes: 4.2 MiB) (time elapsed: 55 milliseconds) (per-host)
+[2025-02-19 13:58:20,231][absl][INFO] - ChainedFuture completed 1/1 futures in 0.20 seconds.
+[2025-02-19 13:58:20,232][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 16.6 MiB/s (total bytes: 4.2 MiB) (time elapsed: 253 milliseconds) (per-host)
+[2025-02-19 13:58:20,238][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-19 13:58:20,270][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2540.orbax-checkpoint-tmp-9 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2540
+[2025-02-19 13:58:20,277][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2540`.
+[2025-02-19 13:58:20,277][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-19 13:58:20,278][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2413
+-----------------------------------------------------------------------------------------
+| end of epoch  21 | time per epoch: 57.77s |
+| Train Metrics | accuracy:  0.90 | loss:  0.53
+| Eval  Metrics | accuracy:  0.94 | loss:  0.22
+-----------------------------------------------------------------------------------------
+[2025-02-19 13:59:24,893][absl][INFO] - Saving checkpoint at step: 2667
+[2025-02-19 13:59:24,894][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-19 13:59:24,894][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-19 13:59:24,895][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2667.
+[2025-02-19 13:59:24,897][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-19 13:59:24,898][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2667.orbax-checkpoint-tmp-10
+[2025-02-19 13:59:24,905][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-19 13:59:24,928][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-19 13:59:24,956][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 83.0 MiB/s (total bytes: 4.2 MiB) (time elapsed: 50 milliseconds) (per-host)
+[2025-02-19 13:59:25,163][absl][INFO] - ChainedFuture completed 1/1 futures in 0.21 seconds.
+[2025-02-19 13:59:25,163][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 16.3 MiB/s (total bytes: 4.2 MiB) (time elapsed: 257 milliseconds) (per-host)
+[2025-02-19 13:59:25,169][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-19 13:59:25,202][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2667.orbax-checkpoint-tmp-10 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2667
+[2025-02-19 13:59:25,210][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2667`.
+[2025-02-19 13:59:25,210][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-19 13:59:25,212][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2540
+-----------------------------------------------------------------------------------------
+| end of epoch  22 | time per epoch: 44.48s |
+| Train Metrics | accuracy:  0.89 | loss:  0.58
+| Eval  Metrics | accuracy:  0.92 | loss:  0.27
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  23 | time per epoch: 46.29s |
+| Train Metrics | accuracy:  0.90 | loss:  0.51
+| Eval  Metrics | accuracy:  0.92 | loss:  0.24
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  24 | time per epoch: 27.90s |
+| Train Metrics | accuracy:  0.89 | loss:  0.59
+| Eval  Metrics | accuracy:  0.93 | loss:  0.24
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  25 | time per epoch: 34.61s |
+| Train Metrics | accuracy:  0.92 | loss:  0.46
+| Eval  Metrics | accuracy:  0.93 | loss:  0.24
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  26 | time per epoch: 50.35s |
+| Train Metrics | accuracy:  0.92 | loss:  0.46
+| Eval  Metrics | accuracy:  0.93 | loss:  0.24
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  27 | time per epoch: 33.90s |
+| Train Metrics | accuracy:  0.93 | loss:  0.41
+| Eval  Metrics | accuracy:  0.94 | loss:  0.23
+-----------------------------------------------------------------------------------------
+[2025-02-19 14:04:16,535][absl][INFO] - Saving checkpoint at step: 3429
+[2025-02-19 14:04:16,536][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-19 14:04:16,537][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-19 14:04:16,538][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_3429.
+[2025-02-19 14:04:16,540][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-19 14:04:16,541][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_3429.orbax-checkpoint-tmp-11
+[2025-02-19 14:04:16,550][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-19 14:04:16,576][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-19 14:04:16,605][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 77.4 MiB/s (total bytes: 4.2 MiB) (time elapsed: 54 milliseconds) (per-host)
+[2025-02-19 14:04:16,796][absl][INFO] - ChainedFuture completed 1/1 futures in 0.19 seconds.
+[2025-02-19 14:04:16,796][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 17.1 MiB/s (total bytes: 4.2 MiB) (time elapsed: 244 milliseconds) (per-host)
+[2025-02-19 14:04:16,802][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-19 14:04:16,836][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_3429.orbax-checkpoint-tmp-11 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_3429
+[2025-02-19 14:04:16,843][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_3429`.
+[2025-02-19 14:04:16,843][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-19 14:04:16,845][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_2667
+-----------------------------------------------------------------------------------------
+| end of epoch  28 | time per epoch: 36.40s |
+| Train Metrics | accuracy:  0.92 | loss:  0.48
+| Eval  Metrics | accuracy:  0.94 | loss:  0.23
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| end of epoch  29 | time per epoch: 61.75s |
+| Train Metrics | accuracy:  0.92 | loss:  0.44
+| Eval  Metrics | accuracy:  0.94 | loss:  0.22
+-----------------------------------------------------------------------------------------
+[2025-02-19 14:06:14,665][absl][INFO] - Saving checkpoint at step: 3683
+[2025-02-19 14:06:14,666][absl][INFO] - Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+[2025-02-19 14:06:14,666][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-19 14:06:14,667][absl][INFO] - [process=0] Started saving checkpoint to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_3683.
+[2025-02-19 14:06:14,669][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre
+[2025-02-19 14:06:14,670][absl][INFO] - Creating tmp directory /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_3683.orbax-checkpoint-tmp-12
+[2025-02-19 14:06:14,676][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post
+[2025-02-19 14:06:14,702][absl][INFO] - Transferring arrays to host memory with options: use_replica_parallel=False, enable_pinned_host_transfer=False
+[2025-02-19 14:06:14,732][absl][INFO] - [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 77.0 MiB/s (total bytes: 4.2 MiB) (time elapsed: 54 milliseconds) (per-host)
+[2025-02-19 14:06:14,921][absl][INFO] - ChainedFuture completed 1/1 futures in 0.19 seconds.
+[2025-02-19 14:06:14,922][absl][INFO] - [process=0] /jax/checkpoint/write/bytes_per_sec: 17.2 MiB/s (total bytes: 4.2 MiB) (time elapsed: 244 milliseconds) (per-host)
+[2025-02-19 14:06:14,927][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save
+[2025-02-19 14:06:14,958][absl][INFO] - Renaming /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_3683.orbax-checkpoint-tmp-12 to /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_3683
+[2025-02-19 14:06:14,965][absl][INFO] - [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_3683`.
+[2025-02-19 14:06:14,965][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize
+[2025-02-19 14:06:14,966][absl][INFO] - Removing checkpoint at /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_3429
+-----------------------------------------------------------------------------------------
+| end of epoch  30 | time per epoch: 50.19s |
+| Train Metrics | accuracy:  0.93 | loss:  0.43
+==== Parameter Statistics: Lambda ====
+{}
+==== Parameter Statistics: B Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/B": {
+    "mean": 0.0001265279424842447,
+    "std": 0.09216579794883728,
+    "var": 0.008494534529745579,
+    "min": -0.2767115831375122,
+    "max": 0.251591295003891,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/B": {
+    "mean": 0.00011583643208723515,
+    "std": 0.09262435883283615,
+    "var": 0.008579272776842117,
+    "min": -0.2888089716434479,
+    "max": 0.33833643794059753,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/B": {
+    "mean": 0.0009850398637354374,
+    "std": 0.09172214567661285,
+    "var": 0.008412951603531837,
+    "min": -0.2635289430618286,
+    "max": 0.2725093364715576,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/B": {
+    "mean": -0.0004038809274788946,
+    "std": 0.09194322675466537,
+    "var": 0.008453557267785072,
+    "min": -0.26629260182380676,
+    "max": 0.28214606642723083,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/B": {
+    "mean": -4.794947381014936e-05,
+    "std": 0.09265334159135818,
+    "var": 0.008584641851484776,
+    "min": -0.3101556897163391,
+    "max": 0.2816581130027771,
+    "shape": [
+      128,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/B": {
+    "mean": -0.0006391030037775636,
+    "std": 0.09257391840219498,
+    "var": 0.00856993068009615,
+    "min": -0.290719598531723,
+    "max": 0.3461994230747223,
+    "shape": [
+      128,
+      96
+    ]
+  }
+}
+==== Parameter Statistics: C Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.0005145792383700609,
+    "std": 0.1690496802330017,
+    "var": 0.02857779525220394,
+    "min": -0.826644241809845,
+    "max": 0.7354722619056702,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0005055987276136875,
+    "std": 0.16363994777202606,
+    "var": 0.02677803300321102,
+    "min": -0.6891417503356934,
+    "max": 0.9458482265472412,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/C": {
+    "mean": 0.0003295406640972942,
+    "std": 0.16515620052814484,
+    "var": 0.027276571840047836,
+    "min": -0.8392294645309448,
+    "max": 0.9214025139808655,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/C": {
+    "mean": 0.0008898586966097355,
+    "std": 0.1610998958349228,
+    "var": 0.025953177362680435,
+    "min": -1.0130707025527954,
+    "max": 0.7314558625221252,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/C": {
+    "mean": -0.0010853479616343975,
+    "std": 0.2019822746515274,
+    "var": 0.04079683870077133,
+    "min": -0.9639734625816345,
+    "max": 0.9323915839195251,
+    "shape": [
+      96,
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/C": {
+    "mean": -0.0007216910598799586,
+    "std": 0.2087150514125824,
+    "var": 0.04356197640299797,
+    "min": -0.9813572764396667,
+    "max": 0.949657678604126,
+    "shape": [
+      96,
+      128
+    ]
+  }
+}
+==== Parameter Statistics: D Matrices ====
+{
+  "encoder/stages_0/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.13743573427200317,
+    "std": 0.10037949681282043,
+    "var": 0.010076044127345085,
+    "min": -0.377081960439682,
+    "max": 0.07089325040578842,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.03734201565384865,
+    "std": 0.2757883071899414,
+    "var": 0.07605919986963272,
+    "min": -1.2805665731430054,
+    "max": 1.5346823930740356,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/D": {
+    "mean": -0.09711162745952606,
+    "std": 0.850123405456543,
+    "var": 0.7227098345756531,
+    "min": -1.6335874795913696,
+    "max": 2.9960687160491943,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.21313035488128662,
+    "std": 0.09859359264373779,
+    "var": 0.0097206961363554,
+    "min": -0.6241000294685364,
+    "max": -0.004920818377286196,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.07187151908874512,
+    "std": 0.23630385100841522,
+    "var": 0.05583951249718666,
+    "min": -1.066659927368164,
+    "max": 1.1258327960968018,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.09678976237773895,
+    "std": 0.6787660717964172,
+    "var": 0.4607233703136444,
+    "min": -2.1084787845611572,
+    "max": 1.7149845361709595,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.19669470191001892,
+    "std": 0.10497554391622543,
+    "var": 0.011019865982234478,
+    "min": -0.4306017756462097,
+    "max": 0.138666570186615,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.07028687000274658,
+    "std": 0.23643305897712708,
+    "var": 0.05590059235692024,
+    "min": -0.9948235154151917,
+    "max": 0.9665160775184631,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/D": {
+    "mean": 0.019553668797016144,
+    "std": 0.6617026925086975,
+    "var": 0.4378504753112793,
+    "min": -1.5844788551330566,
+    "max": 1.6405360698699951,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/bias": {
+    "mean": -0.16538119316101074,
+    "std": 0.07702644914388657,
+    "var": 0.005933074280619621,
+    "min": -0.3774082362651825,
+    "max": 0.022052042186260223,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/Dense_0/kernel": {
+    "mean": -0.05352506786584854,
+    "std": 0.23702490329742432,
+    "var": 0.05618080869317055,
+    "min": -1.0408918857574463,
+    "max": 1.0524299144744873,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/D": {
+    "mean": 0.05162547156214714,
+    "std": 0.7375757098197937,
+    "var": 0.5440179109573364,
+    "min": -1.4383479356765747,
+    "max": 1.8584672212600708,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/bias": {
+    "mean": -0.1556549221277237,
+    "std": 0.10679271817207336,
+    "var": 0.01140468567609787,
+    "min": -0.4049667418003082,
+    "max": 0.12512937188148499,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/Dense_0/kernel": {
+    "mean": -0.0625295490026474,
+    "std": 0.28106552362442017,
+    "var": 0.07899783551692963,
+    "min": -1.3549067974090576,
+    "max": 1.1640894412994385,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/D": {
+    "mean": -0.05430573970079422,
+    "std": 0.6949834227561951,
+    "var": 0.4830020070075989,
+    "min": -2.3229918479919434,
+    "max": 1.332489013671875,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/bias": {
+    "mean": -0.12547290325164795,
+    "std": 0.09527737647294998,
+    "var": 0.009077778086066246,
+    "min": -0.3540760278701782,
+    "max": 0.11200550198554993,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/Dense_0/kernel": {
+    "mean": -0.06597903370857239,
+    "std": 0.2895922362804413,
+    "var": 0.08386366814374924,
+    "min": -1.1697759628295898,
+    "max": 1.1162394285202026,
+    "shape": [
+      96,
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/D": {
+    "mean": 0.08161072432994843,
+    "std": 0.7208561301231384,
+    "var": 0.5196335315704346,
+    "min": -1.4467719793319702,
+    "max": 1.7040739059448242,
+    "shape": [
+      96
+    ]
+  }
+}
+==== Parameter Statistics: Other ====
+{
+  "decoder/bias": {
+    "mean": -0.009486173279583454,
+    "std": 0.1106443703174591,
+    "var": 0.012242177501320839,
+    "min": -0.22876684367656708,
+    "max": 0.208733931183815,
+    "shape": [
+      20
+    ]
+  },
+  "decoder/kernel": {
+    "mean": -0.0006871896330267191,
+    "std": 0.22355060279369354,
+    "var": 0.049974873661994934,
+    "min": -0.7144920229911804,
+    "max": 0.8278883099555969,
+    "shape": [
+      96,
+      20
+    ]
+  },
+  "encoder/encoder/embedding": {
+    "mean": 0.0028130037244409323,
+    "std": 0.2210376262664795,
+    "var": 0.048857636749744415,
+    "min": -1.2704157829284668,
+    "max": 1.340282917022705,
+    "shape": [
+      700,
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": -0.03806709498167038,
+    "std": 0.13241569697856903,
+    "var": 0.017533916980028152,
+    "min": -0.36332449316978455,
+    "max": 0.26772940158843994,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.9465970993041992,
+    "std": 0.13312235474586487,
+    "var": 0.017721563577651978,
+    "min": 0.7093355059623718,
+    "max": 1.4389599561691284,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -2.6806044578552246,
+    "std": 0.959998607635498,
+    "var": 0.921597421169281,
+    "min": -4.828176498413086,
+    "max": -0.4238090515136719,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": -0.004054679069668055,
+    "std": 0.07423585653305054,
+    "var": 0.005510962568223476,
+    "min": -0.21917575597763062,
+    "max": 0.13815541565418243,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.7402218580245972,
+    "std": 0.1426047533750534,
+    "var": 0.02033611759543419,
+    "min": 0.4709777534008026,
+    "max": 1.4263689517974854,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -2.6489481925964355,
+    "std": 0.8782877922058105,
+    "var": 0.7713894248008728,
+    "min": -4.924739837646484,
+    "max": -0.5765655040740967,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": -0.0031607362907379866,
+    "std": 0.07080740481615067,
+    "var": 0.005013688933104277,
+    "min": -0.18248416483402252,
+    "max": 0.2027917355298996,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.7755665183067322,
+    "std": 0.16552503407001495,
+    "var": 0.02739853784441948,
+    "min": 0.5104589462280273,
+    "max": 1.4116394519805908,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_0/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -2.958725929260254,
+    "std": 0.8982306122779846,
+    "var": 0.8068182468414307,
+    "min": -4.6603007316589355,
+    "max": 0.10578915476799011,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/bias": {
+    "mean": -0.015078815631568432,
+    "std": 0.09010785818099976,
+    "var": 0.008119425736367702,
+    "min": -0.2746874988079071,
+    "max": 0.21488025784492493,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/LayerNorm_0/scale": {
+    "mean": 0.7679700255393982,
+    "std": 0.156025692820549,
+    "var": 0.02434401772916317,
+    "min": 0.4664870500564575,
+    "max": 1.5485817193984985,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_0/S5SSM_0/log_step": {
+    "mean": -2.794248580932617,
+    "std": 0.8518574237823486,
+    "var": 0.725661039352417,
+    "min": -4.469785213470459,
+    "max": -0.49879369139671326,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/bias": {
+    "mean": 0.0015576150035485625,
+    "std": 0.10156402736902237,
+    "var": 0.010315251536667347,
+    "min": -0.27302560210227966,
+    "max": 0.2697533071041107,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/LayerNorm_0/scale": {
+    "mean": 0.8567900657653809,
+    "std": 0.15024925768375397,
+    "var": 0.02257484197616577,
+    "min": 0.589327871799469,
+    "max": 1.5011144876480103,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_1/S5SSM_0/log_step": {
+    "mean": -3.0474390983581543,
+    "std": 0.8341761827468872,
+    "var": 0.6958499550819397,
+    "min": -4.72135591506958,
+    "max": -0.7877753376960754,
+    "shape": [
+      128
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/bias": {
+    "mean": -0.007900974713265896,
+    "std": 0.10878536850214005,
+    "var": 0.01183425635099411,
+    "min": -0.2722720205783844,
+    "max": 0.34258073568344116,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/LayerNorm_0/scale": {
+    "mean": 0.9074010848999023,
+    "std": 0.15370285511016846,
+    "var": 0.023624569177627563,
+    "min": 0.6042073965072632,
+    "max": 1.305283784866333,
+    "shape": [
+      96
+    ]
+  },
+  "encoder/stages_1/SequenceLayer_2/S5SSM_0/log_step": {
+    "mean": -2.984349250793457,
+    "std": 0.8941341042518616,
+    "var": 0.7994757890701294,
+    "min": -4.433308124542236,
+    "max": -0.9937105774879456,
+    "shape": [
+      128
+    ]
+  }
+}
+| Eval  Metrics | accuracy:  0.94 | loss:  0.23
+-----------------------------------------------------------------------------------------
+[2025-02-19 14:07:19,598][absl][INFO] - Restoring orbax checkpoint from /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_3683
+[2025-02-19 14:07:19,599][absl][INFO] - Created BasePyTreeCheckpointHandler: pytree_metadata_options=PyTreeMetadataOptions(support_rich_types=False), array_metadata_store=None
+[2025-02-19 14:07:19,606][absl][INFO] - Restoring checkpoint from /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_3683.
+[2025-02-19 14:07:20,147][absl][WARNING] - The transformations API will eventually be replaced by an upgraded design. The current API will not be removed until this point, but it will no longer be actively worked on.
+[2025-02-19 14:07:20,154][absl][INFO] - Finished restoring checkpoint from /nfs/turbo/coe-wluee/zxygo/event-ssm_ver2/outputs/2025-02-19-13-39-00/checkpoints/checkpoint_3683.
+[2025-02-19 14:07:20,154][absl][INFO] - [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:restore
+slurmstepd: error: *** JOB 21423911 ON gl1504 CANCELLED AT 2025-02-19T14:58:10 ***

@@ -1,0 +1,28 @@
+# General
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.cache/
+
+# Environments
+.env
+.venv
+env/
+venv/
+
+# Training outputs / datasets (project-specific)
+**/data/
+**/raw_datasets/
+**/outputs/
+**/slurm_logs/
+**/wandb/
+**/checkpoints/
+**/cache_dir/
