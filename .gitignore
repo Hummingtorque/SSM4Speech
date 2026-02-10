@@ -26,3 +26,4 @@ venv/
 **/wandb/
 **/checkpoints/
 **/cache_dir/
+**/checkpoint_parameters.json
