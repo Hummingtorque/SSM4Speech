@@ -40,6 +40,8 @@ def setup_training(cfg: DictConfig):
     pooling_every_n_layers = int(ssm_cfg.get('pooling_every_n_layers', 1))
     # Build S5 factory (callable) capturing ssm_init hyperparameters
     ssm_init = cfg.model.ssm_init
+    input_gate = bool(ssm_cfg.get("input_gate", False))
+    input_gate_rank = int(ssm_cfg.get("input_gate_rank", 0))
     def s5_factory(d_model_in, d_model_out, d_ssm, block_size, discretization, step_rescale_layer, stride, pooling_mode):
         return TorchS5(
             H_in=d_model_in,
@@ -52,6 +54,8 @@ def setup_training(cfg: DictConfig):
             step_rescale=float(step_rescale_layer),
             stride=int(stride),
             pooling_mode=str(pooling_mode),
+            input_gate=input_gate,
+            input_gate_rank=input_gate_rank,
         )
     audio_cfg = cfg.model.get("audio_encoder", {})
     input_is_mel = bool(audio_cfg.get("use", False))

@@ -71,6 +71,8 @@ class TorchS5(nn.Module):
         step_rescale: float = 1.0,
         stride: int = 1,
         pooling_mode: str = "last",
+        input_gate: bool = False,
+        input_gate_rank: int = 0,
     ):
         super().__init__()
         self.H_in = H_in
@@ -81,6 +83,7 @@ class TorchS5(nn.Module):
         self.step_rescale = step_rescale
         self.stride = stride
         self.pool = EventPooling(stride=stride, mode=pooling_mode) if stride > 1 else None
+        self.input_gate = bool(input_gate)
 
         # Parameters
         # Initialize Lambda from a real-valued HiPPO (DPLR-inspired) spectrum for stability
@@ -112,6 +115,18 @@ class TorchS5(nn.Module):
         self.C = nn.Parameter(torch.empty(H_out, P))
         nn.init.kaiming_uniform_(self.B, a=math.sqrt(5))
         nn.init.kaiming_uniform_(self.C, a=math.sqrt(5))
+
+        # Optional input gate (Mamba-like input-dependent B, lightweight)
+        self.input_gate_rank = int(input_gate_rank)
+        if self.input_gate:
+            if self.input_gate_rank > 0:
+                self.input_gate_net = nn.Sequential(
+                    nn.Linear(H_in, self.input_gate_rank),
+                    nn.SiLU(inplace=True),
+                    nn.Linear(self.input_gate_rank, H_in),
+                )
+            else:
+                self.input_gate_net = nn.Linear(H_in, H_in)
 
         # D: passthrough term
         if H_in == H_out:
@@ -146,6 +161,11 @@ class TorchS5(nn.Module):
         Bsz, L, Hin = u.shape
         device = u.device
         P = self.P
+        u_raw = u
+
+        if self.input_gate:
+            gate = torch.sigmoid(self.input_gate_net(u_raw))
+            u = u_raw * gate
 
         # Project inputs: Bu: [B, L, P]
         Bu = torch.einsum('ph,blh->blp', self.B, u)
@@ -181,9 +201,9 @@ class TorchS5(nn.Module):
 
         # Add D * u passthrough
         if self.H_in == self.H_out:
-            ys = ys + (self.D.to(device) * u)
+            ys = ys + (self.D.to(device) * u_raw)
         else:
-            ys = ys + torch.einsum('ho,blo->blh', self.D.to(device), u)
+            ys = ys + torch.einsum('ho,blo->blh', self.D.to(device), u_raw)
 
         # Optional stride pooling
         if self.pool is not None:
