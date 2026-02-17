@@ -1,4 +1,5 @@
 import os
+import math
 import hydra
 from omegaconf import OmegaConf as om
 from omegaconf import DictConfig, open_dict
@@ -7,6 +8,7 @@ import torch.nn as nn
 
 from event_ssm.dataloading import Datasets
 from event_ssm.seq_model import ClassificationModel
+from event_ssm.layers import TorchS5
 
 
 def setup_evaluation(cfg: DictConfig):
@@ -27,8 +29,31 @@ def setup_evaluation(cfg: DictConfig):
     ssm_cfg = cfg.model.ssm
     step_rescale = float(ssm_cfg.get('step_rescale', 1.0))
     pooling_every_n_layers = int(ssm_cfg.get('pooling_every_n_layers', 1))
+    ssm_init = cfg.model.ssm_init
+    def s5_factory(d_model_in, d_model_out, d_ssm, block_size, discretization, step_rescale_layer, stride, pooling_mode):
+        return TorchS5(
+            H_in=d_model_in,
+            H_out=d_model_out,
+            P=d_ssm,
+            block_size=block_size,
+            discretization=discretization,
+            dt_min=float(ssm_init.dt_min),
+            dt_max=float(ssm_init.dt_max),
+            step_rescale=float(step_rescale_layer),
+            stride=int(stride),
+            pooling_mode=str(pooling_mode),
+        )
+    audio_cfg = cfg.model.get("audio_encoder", {})
+    input_is_mel = bool(audio_cfg.get("use", False))
+    audio_encoder_type = str(audio_cfg.get("type", "conv1d"))
+    audio_in_channels = int(audio_cfg.get("in_channels", 1))
+    audio_freq_stride = int(audio_cfg.get("freq_stride", 1))
+    conv_kernel = int(audio_cfg.get("kernel_size", 3))
+    conv_stride = int(audio_cfg.get("stride", 1))
+    mel_bins = int(getattr(cfg.training, "mel_bins", 0))
+    num_embeddings = 0 if input_is_mel else data.num_embeddings
     model = ClassificationModel(
-        ssm=None,
+        ssm=s5_factory,
         discretization=cfg.model.ssm.discretization,
         num_classes=data.n_classes,
         d_model=cfg.model.ssm.d_model,
@@ -36,7 +61,14 @@ def setup_evaluation(cfg: DictConfig):
         ssm_block_size=cfg.model.ssm.ssm_block_size,
         num_stages=cfg.model.ssm.num_stages,
         num_layers_per_stage=cfg.model.ssm.num_layers_per_stage,
-        num_embeddings=data.num_embeddings,
+        num_embeddings=num_embeddings,
+        input_is_mel=input_is_mel,
+        mel_bins=mel_bins,
+        audio_encoder_type=audio_encoder_type,
+        audio_in_channels=audio_in_channels,
+        audio_freq_stride=audio_freq_stride,
+        conv_kernel=conv_kernel,
+        conv_stride=conv_stride,
         dropout=cfg.model.ssm.dropout,
         classification_mode=cfg.model.ssm.classification_mode,
         prenorm=cfg.model.ssm.prenorm,

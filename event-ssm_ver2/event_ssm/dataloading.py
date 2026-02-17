@@ -736,7 +736,6 @@ def create_audio_gsc_mel_classification_dataset(
         mixup_prob: float = 0.0,
         silence_ratio: float = 0.05,
         vad_threshold: float = 0.0,
-        vad_use_voiceband: bool = True,
         **kwargs
 ) -> Tuple[DataLoader, DataLoader, DataLoader, Data]:
     if seed is not None:
@@ -823,10 +822,6 @@ def create_audio_gsc_mel_classification_dataset(
         n_frames = max(1, int(duration_sec * float(sr) / float(hop_length)))
         return np.zeros((n_frames, mel_bins), dtype=np.float32)
 
-    # Voice-band ratio mask for VAD (300-3400 Hz)
-    mel_freqs = librosa.mel_frequencies(n_mels=mel_bins, fmin=0.0, fmax=sr / 2)
-    voice_mask = (mel_freqs >= 300.0) & (mel_freqs <= 3400.0)
-
     class GSCMelDataset(torch.utils.data.Dataset):
         def __init__(self, split: str):
             self.items = list(iter_files(split))
@@ -846,14 +841,7 @@ def create_audio_gsc_mel_classification_dataset(
                 mel = wav_to_mel_frames(wav_path)
                 # VAD: if energy below threshold, map to silence class
                 if want_silence and vad_threshold > 0.0:
-                    if vad_use_voiceband:
-                        total = float(np.sum(mel)) + 1e-12
-                        voice = float(np.sum(mel[:, voice_mask]))
-                        ratio = voice / total
-                        is_silence = ratio < float(vad_threshold)
-                    else:
-                        is_silence = float(np.mean(mel)) < float(vad_threshold)
-                    if is_silence:
+                    if float(np.mean(mel)) < float(vad_threshold):
                         mel = silence_mel_frames()
                         y_idx = label_to_idx["silence"]
             onehot = np.eye(len(labels), dtype=np.float32)[y_idx]

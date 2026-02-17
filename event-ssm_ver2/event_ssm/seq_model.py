@@ -235,6 +235,24 @@ def masked_timepool(x: torch.Tensor, lengths: torch.Tensor, integration_timestep
     return integral / T
 
 
+def masked_attn_pool(x: torch.Tensor, lengths: torch.Tensor, attn_proj: nn.Module):
+    """
+    Attention pooling across time with padding mask.
+
+    :param x: [B, L, H]
+    :param lengths: [B]
+    :param attn_proj: nn.Linear(H, 1)
+    :return: pooled [B, H]
+    """
+    B, L, _ = x.shape
+    device = x.device
+    mask = torch.arange(L, device=device).unsqueeze(0) < lengths.unsqueeze(1)
+    scores = attn_proj(x).squeeze(-1)  # [B, L]
+    scores = scores.masked_fill(~mask, float("-inf"))
+    weights = torch.softmax(scores, dim=1).unsqueeze(-1)  # [B, L, 1]
+    return (x * weights).sum(dim=1)
+
+
 class ClassificationModel(nn.Module):
     """
     EventSSM classification sequence model in PyTorch.
@@ -297,6 +315,7 @@ class ClassificationModel(nn.Module):
             state_expansion_factor=state_expansion_factor
         )
         self.decoder = nn.Linear(d_model * (state_expansion_factor ** (num_stages - 1)), num_classes)
+        self.attn_pool = nn.Linear(d_model * (state_expansion_factor ** (num_stages - 1)), 1)
 
     def forward(self, x: torch.Tensor, integration_timesteps: torch.Tensor, length: torch.Tensor, train: bool = True):
         # Adjust length for downsampling
@@ -308,12 +327,14 @@ class ClassificationModel(nn.Module):
             x = masked_meanpool(x, length)
         elif self.classification_mode in ["timepool"]:
             x = masked_timepool(x, length, integration_timesteps)
+        elif self.classification_mode in ["attnpool"]:
+            x = masked_attn_pool(x, length, self.attn_pool)
         elif self.classification_mode in ["last"]:
             # Last valid state
             idx = (length - 1).clamp_min(0)
             x = x[torch.arange(x.size(0), device=x.device), idx]
         else:
-            raise NotImplementedError("Mode must be in ['pool', 'timepool', 'last']")
+            raise NotImplementedError("Mode must be in ['pool', 'timepool', 'attnpool', 'last']")
 
         x = self.decoder(x)
         return x
