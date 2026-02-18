@@ -73,6 +73,10 @@ class TorchS5(nn.Module):
         pooling_mode: str = "last",
         input_gate: bool = False,
         input_gate_rank: int = 0,
+        input_gate_mode: str = "sigmoid",
+        input_gate_energy_scale_init: float = 0.0,
+        input_gate_bias_init: float = 0.0,
+        input_gate_min: float = 0.0,
     ):
         super().__init__()
         self.H_in = H_in
@@ -84,6 +88,8 @@ class TorchS5(nn.Module):
         self.stride = stride
         self.pool = EventPooling(stride=stride, mode=pooling_mode) if stride > 1 else None
         self.input_gate = bool(input_gate)
+        self.input_gate_mode = str(input_gate_mode)
+        self.input_gate_min = float(input_gate_min)
 
         # Parameters
         # Initialize Lambda from a real-valued HiPPO (DPLR-inspired) spectrum for stability
@@ -127,6 +133,14 @@ class TorchS5(nn.Module):
                 )
             else:
                 self.input_gate_net = nn.Linear(H_in, H_in)
+            # Learnable global bias shifts overall pass-through level.
+            self.input_gate_bias = nn.Parameter(torch.full((1, 1, H_in), float(input_gate_bias_init)))
+            # Non-negative learnable strength for energy-aware suppression (if enabled).
+            if self.input_gate_mode == "energy_aware":
+                e0 = max(1e-6, float(input_gate_energy_scale_init))
+                self.input_gate_energy_scale_raw = nn.Parameter(torch.tensor(math.log(math.expm1(e0)), dtype=torch.float32))
+            else:
+                self.register_parameter("input_gate_energy_scale_raw", None)
 
         # D: passthrough term
         if H_in == H_out:
@@ -164,7 +178,18 @@ class TorchS5(nn.Module):
         u_raw = u
 
         if self.input_gate:
-            gate = torch.sigmoid(self.input_gate_net(u_raw))
+            gate_logits = self.input_gate_net(u_raw) + self.input_gate_bias
+            if self.input_gate_mode == "energy_aware":
+                # Penalize high-energy frames (noise-like) with one reduction + scalar multiply.
+                energy = u_raw.pow(2).mean(dim=-1, keepdim=True)  # [B, L, 1]
+                energy_scale = F.softplus(self.input_gate_energy_scale_raw)
+                gate_logits = gate_logits - energy_scale * energy
+            gate = torch.sigmoid(gate_logits)
+            if self.input_gate_min > 0.0:
+                minv = min(max(self.input_gate_min, 0.0), 0.99)
+                gate = gate * (1.0 - minv) + minv
+            # Per-sample gate summary used by optional gate-direction regularization in training.
+            self._last_gate_per_sample = gate.mean(dim=(1, 2))
             u = u_raw * gate
 
         # Project inputs: Bu: [B, L, P]

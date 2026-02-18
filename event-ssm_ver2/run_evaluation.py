@@ -29,6 +29,12 @@ def setup_evaluation(cfg: DictConfig):
     ssm_cfg = cfg.model.ssm
     step_rescale = float(ssm_cfg.get('step_rescale', 1.0))
     pooling_every_n_layers = int(ssm_cfg.get('pooling_every_n_layers', 1))
+    input_gate = bool(ssm_cfg.get("input_gate", False))
+    input_gate_rank = int(ssm_cfg.get("input_gate_rank", 0))
+    input_gate_mode = str(ssm_cfg.get("input_gate_mode", "sigmoid"))
+    input_gate_energy_scale_init = float(ssm_cfg.get("input_gate_energy_scale_init", 0.0))
+    input_gate_bias_init = float(ssm_cfg.get("input_gate_bias_init", 0.0))
+    input_gate_min = float(ssm_cfg.get("input_gate_min", 0.0))
     ssm_init = cfg.model.ssm_init
     def s5_factory(d_model_in, d_model_out, d_ssm, block_size, discretization, step_rescale_layer, stride, pooling_mode):
         return TorchS5(
@@ -42,6 +48,12 @@ def setup_evaluation(cfg: DictConfig):
             step_rescale=float(step_rescale_layer),
             stride=int(stride),
             pooling_mode=str(pooling_mode),
+            input_gate=input_gate,
+            input_gate_rank=input_gate_rank,
+            input_gate_mode=input_gate_mode,
+            input_gate_energy_scale_init=input_gate_energy_scale_init,
+            input_gate_bias_init=input_gate_bias_init,
+            input_gate_min=input_gate_min,
         )
     audio_cfg = cfg.model.get("audio_encoder", {})
     input_is_mel = bool(audio_cfg.get("use", False))

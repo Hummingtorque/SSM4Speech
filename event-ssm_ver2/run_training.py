@@ -1,9 +1,12 @@
 import os
 from functools import partial
+from pathlib import Path
 import hydra
 from omegaconf import OmegaConf as om
 from omegaconf import DictConfig, open_dict
 import math
+import numpy as np
+import librosa
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -42,6 +45,10 @@ def setup_training(cfg: DictConfig):
     ssm_init = cfg.model.ssm_init
     input_gate = bool(ssm_cfg.get("input_gate", False))
     input_gate_rank = int(ssm_cfg.get("input_gate_rank", 0))
+    input_gate_mode = str(ssm_cfg.get("input_gate_mode", "sigmoid"))
+    input_gate_energy_scale_init = float(ssm_cfg.get("input_gate_energy_scale_init", 0.0))
+    input_gate_bias_init = float(ssm_cfg.get("input_gate_bias_init", 0.0))
+    input_gate_min = float(ssm_cfg.get("input_gate_min", 0.0))
     def s5_factory(d_model_in, d_model_out, d_ssm, block_size, discretization, step_rescale_layer, stride, pooling_mode):
         return TorchS5(
             H_in=d_model_in,
@@ -56,6 +63,10 @@ def setup_training(cfg: DictConfig):
             pooling_mode=str(pooling_mode),
             input_gate=input_gate,
             input_gate_rank=input_gate_rank,
+            input_gate_mode=input_gate_mode,
+            input_gate_energy_scale_init=input_gate_energy_scale_init,
+            input_gate_bias_init=input_gate_bias_init,
+            input_gate_min=input_gate_min,
         )
     audio_cfg = cfg.model.get("audio_encoder", {})
     input_is_mel = bool(audio_cfg.get("use", False))
@@ -159,6 +170,112 @@ def main(config: DictConfig):
     named_params = [(n, p) for n, p in model.named_parameters() if p.requires_grad]
     ema_params = {n: p.detach().clone() for n, p in named_params} if use_ema else {}
 
+    # Optional gate-direction regularization:
+    # encourage mean_gate(keyword) > mean_gate(background) + margin
+    gate_reg_weight = float(getattr(config.optimizer, "gate_reg_weight", 0.0))
+    gate_reg_margin = float(getattr(config.optimizer, "gate_reg_margin", 0.05))
+    gate_reg_bg_batch_size = int(getattr(config.optimizer, "gate_reg_bg_batch_size", 8))
+    gate_reg_interval = int(getattr(config.optimizer, "gate_reg_interval", 4))
+    gate_reg_bg_dir = str(getattr(config.optimizer, "gate_reg_bg_dir", ""))
+    gate_reg_enabled = gate_reg_weight > 0.0 and gate_reg_bg_batch_size > 0 and gate_reg_interval > 0
+    gate_reg_bg_mels = []
+    gate_reg_rng = np.random.default_rng(int(getattr(config, "seed", 1234)))
+    gate_reg_dt_ms = float(getattr(config.training, "hop_length", 160)) / float(getattr(config.training, "sr", 16000)) * 1000.0
+    gate_reg_pad_unit = int(getattr(config.training, "pad_unit", 8192))
+    gate_reg_mel_bins = int(getattr(config.training, "mel_bins", 64))
+    gate_reg_sr = int(getattr(config.training, "sr", 16000))
+    gate_reg_n_fft = int(getattr(config.training, "n_fft", 1024))
+    gate_reg_hop = int(getattr(config.training, "hop_length", 160))
+    gate_reg_win = int(getattr(config.training, "win_length", 400))
+    gate_reg_top_db = float(getattr(config.training, "top_db", 80.0))
+    gate_reg_use_log_mel = bool(getattr(config.training, "use_log_mel", True))
+
+    def _load_bg_mel_cache():
+        nonlocal gate_reg_bg_mels, gate_reg_enabled
+        if not gate_reg_enabled:
+            return
+        bg_dir = Path(gate_reg_bg_dir) if gate_reg_bg_dir else (Path(str(config.training.root)) / "_background_noise_")
+        if not bg_dir.exists():
+            print(f"[warn] Gate reg background dir not found: {bg_dir}. Disabling gate regularization.")
+            gate_reg_enabled = False
+            return
+        wavs = sorted(bg_dir.glob("*.wav"))
+        if len(wavs) == 0:
+            print(f"[warn] No background wavs in {bg_dir}. Disabling gate regularization.")
+            gate_reg_enabled = False
+            return
+        for wavp in wavs:
+            y, _ = librosa.load(str(wavp), sr=gate_reg_sr, mono=True)
+            mel_power = librosa.feature.melspectrogram(
+                y=y,
+                sr=gate_reg_sr,
+                n_fft=gate_reg_n_fft,
+                hop_length=gate_reg_hop,
+                win_length=gate_reg_win,
+                n_mels=gate_reg_mel_bins,
+                power=2.0,
+            )
+            if gate_reg_use_log_mel:
+                mel_db = librosa.power_to_db(mel_power, ref=np.max, top_db=float(gate_reg_top_db))
+                mel = ((mel_db + float(gate_reg_top_db)) / float(gate_reg_top_db)).astype(np.float32)
+            else:
+                max_val = float(np.max(mel_power)) if mel_power.size > 0 else 0.0
+                if max_val <= 0.0 or not np.isfinite(max_val):
+                    mel = np.zeros_like(mel_power, dtype=np.float32)
+                else:
+                    mel = (mel_power / (max_val + 1e-8)).astype(np.float32)
+            mel_t = mel.T
+            if mel_t.shape[0] > 0:
+                gate_reg_bg_mels.append(mel_t)
+        if len(gate_reg_bg_mels) == 0:
+            print(f"[warn] Background mel cache empty from {bg_dir}. Disabling gate regularization.")
+            gate_reg_enabled = False
+            return
+        print(f"[*] Gate regularization enabled. Background clips loaded: {len(gate_reg_bg_mels)}")
+
+    def _collect_gate_per_sample() -> torch.Tensor | None:
+        vals = []
+        for module in model.modules():
+            if isinstance(module, TorchS5) and getattr(module, "input_gate", False):
+                g = getattr(module, "_last_gate_per_sample", None)
+                if g is not None:
+                    vals.append(g)
+        if len(vals) == 0:
+            return None
+        # Stack over layers -> [num_layers, B], then average over layers.
+        return torch.stack(vals, dim=0).mean(dim=0)
+
+    def _sample_background_batch(lengths: torch.Tensor):
+        # lengths: [B]
+        lengths_np = lengths.detach().cpu().numpy().astype(np.int32)
+        Bbg = min(gate_reg_bg_batch_size, int(lengths_np.shape[0]))
+        if Bbg <= 0:
+            return None
+        picked_idx = gate_reg_rng.choice(lengths_np.shape[0], size=Bbg, replace=(lengths_np.shape[0] < Bbg))
+        picked_lengths = np.maximum(1, lengths_np[picked_idx])
+        max_len = int(np.max(picked_lengths))
+        pad_len = (max_len // gate_reg_pad_unit) * gate_reg_pad_unit + gate_reg_pad_unit
+        x = np.zeros((Bbg, pad_len, gate_reg_mel_bins), dtype=np.float32)
+        t = np.zeros((Bbg, pad_len), dtype=np.float32)
+        l = picked_lengths.astype(np.int32)
+        for i, li in enumerate(picked_lengths):
+            mel = gate_reg_bg_mels[int(gate_reg_rng.integers(0, len(gate_reg_bg_mels)))]
+            if mel.shape[0] >= li:
+                st = int(gate_reg_rng.integers(0, mel.shape[0] - li + 1))
+                seg = mel[st:st + li]
+            else:
+                seg = np.zeros((li, gate_reg_mel_bins), dtype=np.float32)
+                seg[:mel.shape[0], :] = mel
+            x[i, :li, :] = seg
+            t[i, :li] = gate_reg_dt_ms
+        return (
+            torch.from_numpy(x).to(device),
+            torch.from_numpy(t).to(device),
+            torch.from_numpy(l).to(device),
+        )
+
+    _load_bg_mel_cache()
+
     def get_scheduled_lr(step_idx: int) -> float:
         if total_steps <= 0:
             return lr
@@ -229,12 +346,22 @@ def main(config: DictConfig):
         for step, batch in enumerate(train_loader, 1):
             x, y, t, l = numpy_batch_to_tensors(batch)
             logits = model(x, t, l, train=True)
+            kw_gate = _collect_gate_per_sample()
             # NaN/Inf guard on logits before loss
             if not torch.isfinite(logits).all():
                 print(f"[warn] Non-finite logits encountered at epoch {epoch}, step {step}. Skipping batch.")
                 optimizer.zero_grad(set_to_none=True)
                 continue
-            loss = criterion(logits, y) / accumulation_steps
+            gate_reg_loss = torch.zeros((), device=device)
+            if gate_reg_enabled and (step % gate_reg_interval == 0) and (kw_gate is not None):
+                bg_batch = _sample_background_batch(l)
+                if bg_batch is not None:
+                    bg_x, bg_t, bg_l = bg_batch
+                    _ = model(bg_x, bg_t, bg_l, train=True)
+                    bg_gate = _collect_gate_per_sample()
+                    if bg_gate is not None:
+                        gate_reg_loss = torch.relu(gate_reg_margin - (kw_gate.mean() - bg_gate.mean()))
+            loss = (criterion(logits, y) + gate_reg_weight * gate_reg_loss) / accumulation_steps
             # NaN/Inf guard on loss
             if not torch.isfinite(loss):
                 print(f"[warn] Non-finite loss encountered at epoch {epoch}, step {step}. Skipping batch.")
