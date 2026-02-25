@@ -1,0 +1,76 @@
+program: run_training.py
+method: bayes
+metric:
+  goal: maximize
+  name: val_accuracy
+run_cap: 100
+
+parameters:
+  optimizer.ssm_base_lr:
+    distribution: log_uniform_values
+    min: 8.0e-06
+    max: 1.0e-04
+  optimizer.lr_factor:
+    distribution: int_uniform
+    min: 2
+    max: 8
+  optimizer.weight_decay:
+    distribution: uniform
+    min: 0.005
+    max: 0.04
+  optimizer.ssm_weight_decay:
+    distribution: uniform
+    min: 0.0
+    max: 5.0e-04
+  optimizer.label_smoothing:
+    distribution: uniform
+    min: 0.0
+    max: 0.1
+  training.per_device_batch_size:
+    values: [32, 64]
+  model.ssm.input_gate:
+    values: [true, false]
+
+command:
+  - ${env}
+  - python
+  - -u
+  - run_training.py
+  - data_dir=/nfs/turbo/coe-wluee/hmingtao/SSMnoJax/event-ssm_ver2/data/GSC
+  - +training.root=/nfs/turbo/coe-wluee/hmingtao/SSMnoJax/event-ssm_ver2/data/GSC
+  - ++output_dir=./outputs/${env:SLURM_JOB_ID}_${env:SLURM_JOB_NAME}
+  - task.name=gsc-mel-classification
+  - model=GSC/medium
+  - training.num_epochs=20
+  - training.validate_on_test=false
+  - training.per_device_batch_size=${training.per_device_batch_size}
+  - training.per_device_eval_batch_size=${training.per_device_batch_size}
+  - training.num_workers=0
+  - training.cut_mix=0.0
+  - +training.mel_bins=64
+  - model.ssm.classification_mode=timepool
+  - model.ssm.pooling_mode=timepool
+  - model.ssm.pooling_stride=4
+  - +model.audio_encoder.use=true
+  - +model.audio_encoder.kernel_size=3
+  - +model.audio_encoder.stride=1
+  - +model.ssm.input_gate=${model.ssm.input_gate}
+  - +model.ssm.input_gate_rank=0
+  - +model.ssm.input_gate_mode=sigmoid
+  - +model.ssm.input_gate_min=0.0
+  - +training.use_log_mel=true
+  - +training.specaugment_prob=0.0
+  - +training.freq_mask_param=0
+  - +training.time_mask_param=0
+  - +training.num_masks=0
+  - +training.mixup_alpha=0.0
+  - +training.mixup_prob=0.0
+  - optimizer.warmup_epochs=10
+  - ++optimizer.accumulation_steps=1
+  - +optimizer.grad_clip_norm=0.5
+  - +optimizer.gate_reg_weight=0.0
+  - optimizer.ssm_base_lr=${optimizer.ssm_base_lr}
+  - optimizer.lr_factor=${optimizer.lr_factor}
+  - optimizer.ssm_weight_decay=${optimizer.ssm_weight_decay}
+  - optimizer.weight_decay=${optimizer.weight_decay}
+  - +optimizer.label_smoothing=${optimizer.label_smoothing}

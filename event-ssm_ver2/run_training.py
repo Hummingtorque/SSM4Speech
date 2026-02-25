@@ -115,6 +115,22 @@ def main(config: DictConfig):
     os.makedirs(os.path.join(config.logging.log_dir, 'checkpoints'), exist_ok=True)
     with open(os.path.join(config.logging.log_dir, 'config.yaml'), 'w') as f:
         om.save(config, f)
+    wandb = None
+    wandb_run = None
+    try:
+        import wandb as _wandb
+        wandb = _wandb
+        wandb_run = wandb.init(
+            project=os.getenv("WANDB_PROJECT", "event-ssm_ver2"),
+            config=om.to_container(config, resolve=True),
+            dir=config.logging.log_dir,
+        )
+        wandb.define_metric("epoch")
+        wandb.define_metric("val_accuracy", summary="max")
+        wandb.define_metric("accuracy", summary="max")
+    except Exception as exc:
+        # Keep training robust even when W&B is unavailable/misconfigured.
+        print(f"[warn] W&B disabled: {exc}")
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model, train_loader, val_loader, test_loader, data = setup_training(config)
@@ -417,6 +433,19 @@ def main(config: DictConfig):
         if max_lambda_abs is not None:
             msg = f"{msg} | max|Lambda| {max_lambda_abs:.4f}"
         print(msg)
+        if wandb_run is not None:
+            train_acc = 100.0 * running_correct / max(1, running_total)
+            train_loss = running_loss / max(1, len(train_loader))
+            wandb.log({
+                "epoch": epoch,
+                "val_accuracy": float(val_acc),
+                "accuracy": float(val_acc),
+                "train_accuracy": float(train_acc),
+                "train_loss": float(train_loss),
+                "val_loss": float(val_loss),
+                "best_accuracy": float(max(best_val_acc, val_acc)),
+                "lr": float(optimizer.param_groups[0]["lr"]),
+            })
 
         # Save best
         if val_acc > best_val_acc:
@@ -449,6 +478,8 @@ def main(config: DictConfig):
             return 100.0 * test_correct / max(1, test_total)
         test_acc = _eval_with_params(run_test, eval_with_ema)
         print(f"[*] Test accuracy: {test_acc:.2f}%")
+        if wandb_run is not None:
+            wandb.log({"test_accuracy": float(test_acc)})
 
     # Print Lambda values per SSM layer at end of training
     layer_idx = 0
@@ -458,6 +489,8 @@ def main(config: DictConfig):
             lamb_list = lamb.detach().cpu().numpy().tolist()
             print(f"[*] Lambda layer {layer_idx}: {lamb_list}")
             layer_idx += 1
+    if wandb_run is not None:
+        wandb.finish()
 
 
 if __name__ == '__main__':

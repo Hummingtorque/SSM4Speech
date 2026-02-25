@@ -4,7 +4,7 @@ from typing import Callable, Optional, TypeVar, Dict, Tuple, List, Union
 import tonic
 from functools import partial
 import numpy as np
-import librosa
+import torchaudio
 from event_ssm.transform import Identity, Roll, Rotate, Scale, DropEventChunk, Jitter1D, OneHotLabels, cut_mix_augmentation
 
 DEFAULT_CACHE_DIR_ROOT = Path('./cache_dir/')
@@ -801,22 +801,37 @@ def create_audio_gsc_mel_classification_dataset(
                     elif split == "test" and rel in test_list:
                         yield wavp, label_to_idx["unknown"]
 
+    mel_transform = torchaudio.transforms.MelSpectrogram(
+        sample_rate=sr,
+        n_fft=n_fft,
+        hop_length=hop_length,
+        win_length=win_length,
+        n_mels=mel_bins,
+        power=2.0,
+    )
+    amp_to_db = torchaudio.transforms.AmplitudeToDB(stype="power", top_db=float(top_db))
+
     def wav_to_mel_frames(wav_path: Path) -> np.ndarray:
-        y, _ = librosa.load(str(wav_path), sr=sr, mono=True)
-        mel_power = librosa.feature.melspectrogram(
-            y=y, sr=sr, n_fft=n_fft, hop_length=hop_length, win_length=win_length, n_mels=mel_bins, power=2.0
-        )
-        if use_log_mel:
-            mel_db = librosa.power_to_db(mel_power, ref=np.max, top_db=float(top_db))
-            mel = ((mel_db + float(top_db)) / float(top_db)).astype(np.float32)
-        else:
-            max_val = float(np.max(mel_power)) if mel_power.size > 0 else 0.0
-            if max_val <= 0.0 or not np.isfinite(max_val):
-                mel = np.zeros_like(mel_power, dtype=np.float32)
+        y, orig_sr = torchaudio.load(str(wav_path))  # [C, T]
+        if y.dim() == 2 and y.shape[0] > 1:
+            y = y.mean(dim=0, keepdim=True)
+        if int(orig_sr) != int(sr):
+            y = torchaudio.functional.resample(y, int(orig_sr), int(sr))
+        with torch.no_grad():
+            mel_power = mel_transform(y)  # [1, mel_bins, L]
+            if use_log_mel:
+                mel_db = amp_to_db(mel_power)
+                # Keep previous behavior close to librosa power_to_db(ref=np.max, top_db=...)
+                mel_db = mel_db - mel_db.amax(dim=(-2, -1), keepdim=True)
+                mel_db = mel_db.clamp(min=-float(top_db), max=0.0)
+                mel = (mel_db + float(top_db)) / float(top_db)
             else:
-                mel = (mel_power / (max_val + 1e-8)).astype(np.float32)
-        # Return [L, mel_bins]
-        return mel.T
+                max_val = mel_power.amax()
+                if not torch.isfinite(max_val) or float(max_val) <= 0.0:
+                    mel = torch.zeros_like(mel_power)
+                else:
+                    mel = mel_power / (max_val + 1e-8)
+        return mel.squeeze(0).transpose(0, 1).cpu().numpy().astype(np.float32)
 
     def silence_mel_frames(duration_sec: float = 1.0) -> np.ndarray:
         n_frames = max(1, int(duration_sec * float(sr) / float(hop_length)))
@@ -973,21 +988,36 @@ def create_audio_hd_mel_classification_dataset(
         train_items = [train_items_all[i] for i in perm[:-val_len]]
         val_items = [train_items_all[i] for i in perm[-val_len:]]
 
+    mel_transform = torchaudio.transforms.MelSpectrogram(
+        sample_rate=sr,
+        n_fft=n_fft,
+        hop_length=hop_length,
+        win_length=win_length,
+        n_mels=mel_bins,
+        power=2.0,
+    )
+    amp_to_db = torchaudio.transforms.AmplitudeToDB(stype="power", top_db=float(top_db))
+
     def wav_to_mel_frames(wav_path: Path) -> np.ndarray:
-        y, _ = librosa.load(str(wav_path), sr=sr, mono=True)
-        mel_power = librosa.feature.melspectrogram(
-            y=y, sr=sr, n_fft=n_fft, hop_length=hop_length, win_length=win_length, n_mels=mel_bins, power=2.0
-        )
-        if use_log_mel:
-            mel_db = librosa.power_to_db(mel_power, ref=np.max, top_db=float(top_db))
-            mel = ((mel_db + float(top_db)) / float(top_db)).astype(np.float32)
-        else:
-            max_val = float(np.max(mel_power)) if mel_power.size > 0 else 0.0
-            if max_val <= 0.0 or not np.isfinite(max_val):
-                mel = np.zeros_like(mel_power, dtype=np.float32)
+        y, orig_sr = torchaudio.load(str(wav_path))  # [C, T]
+        if y.dim() == 2 and y.shape[0] > 1:
+            y = y.mean(dim=0, keepdim=True)
+        if int(orig_sr) != int(sr):
+            y = torchaudio.functional.resample(y, int(orig_sr), int(sr))
+        with torch.no_grad():
+            mel_power = mel_transform(y)  # [1, mel_bins, L]
+            if use_log_mel:
+                mel_db = amp_to_db(mel_power)
+                mel_db = mel_db - mel_db.amax(dim=(-2, -1), keepdim=True)
+                mel_db = mel_db.clamp(min=-float(top_db), max=0.0)
+                mel = (mel_db + float(top_db)) / float(top_db)
             else:
-                mel = (mel_power / (max_val + 1e-8)).astype(np.float32)
-        return mel.T
+                max_val = mel_power.amax()
+                if not torch.isfinite(max_val) or float(max_val) <= 0.0:
+                    mel = torch.zeros_like(mel_power)
+                else:
+                    mel = mel_power / (max_val + 1e-8)
+        return mel.squeeze(0).transpose(0, 1).cpu().numpy().astype(np.float32)
 
     class HDMelDataset(torch.utils.data.Dataset):
         def __init__(self, items: List[Tuple[Path, int]]):

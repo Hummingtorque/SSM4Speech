@@ -90,6 +90,7 @@ class TorchS5(nn.Module):
         self.input_gate = bool(input_gate)
         self.input_gate_mode = str(input_gate_mode)
         self.input_gate_min = float(input_gate_min)
+        self.vad_gate = None
 
         # Parameters
         # Initialize Lambda from a real-valued HiPPO (DPLR-inspired) spectrum for stability
@@ -176,6 +177,7 @@ class TorchS5(nn.Module):
         device = u.device
         P = self.P
         u_raw = u
+        self.vad_gate = None
 
         if self.input_gate:
             gate_logits = self.input_gate_net(u_raw) + self.input_gate_bias
@@ -188,6 +190,7 @@ class TorchS5(nn.Module):
             if self.input_gate_min > 0.0:
                 minv = min(max(self.input_gate_min, 0.0), 0.99)
                 gate = gate * (1.0 - minv) + minv
+            self.vad_gate = gate
             # Per-sample gate summary used by optional gate-direction regularization in training.
             self._last_gate_per_sample = gate.mean(dim=(1, 2))
             u = u_raw * gate
@@ -224,11 +227,12 @@ class TorchS5(nn.Module):
         # Readout y = C x + D u
         ys = torch.einsum('hp,blp->blh', self.C, x_seq)           # [B, L, H_out]
 
-        # Add D * u passthrough
+        # Add D * u passthrough.
+        # Use gated u when input_gate is enabled (otherwise u == u_raw).
         if self.H_in == self.H_out:
-            ys = ys + (self.D.to(device) * u_raw)
+            ys = ys + (self.D.to(device) * u)
         else:
-            ys = ys + torch.einsum('ho,blo->blh', self.D.to(device), u_raw)
+            ys = ys + torch.einsum('ho,blo->blh', self.D.to(device), u)
 
         # Optional stride pooling
         if self.pool is not None:
@@ -507,6 +511,9 @@ class SequenceLayer(nn.Module):
         skip = x
         if self.ssm_block is not None:
             y = self.ssm_block(x, integration_timesteps)  # [B, L, H_out]
+            # If TorchS5 exposes a per-token gate, apply the same gate on the residual branch.
+            if hasattr(self.ssm_block, "vad_gate") and (self.ssm_block.vad_gate is not None):
+                skip = skip * self.ssm_block.vad_gate
         else:
             y = self.proj(x)  # [B, L, H_out]
 
